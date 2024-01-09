@@ -12,3 +12,8 @@ docs/
 
 # Dotenv file
 .env
+
+# npm
+node_modules
+pnpm-lock.yaml
+bun.lockb

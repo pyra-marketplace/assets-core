@@ -17,7 +17,6 @@ contract ShareAction is ActionBase {
     }
 
     struct ShareData {
-        address monetizer;
         address shareToken;
         uint256 totalValue;
         uint256 totalSupply;
@@ -43,7 +42,6 @@ contract ShareAction is ActionBase {
             address creator
         ) = abi.decode(data, (string, string, address, uint256, uint256, address));
         ShareToken shareToken = new ShareToken(name, symbol);
-        assetShareData[assetId].monetizer = msg.sender;
         assetShareData[assetId].currency = currency;
         assetShareData[assetId].feePoint = feePoint;
         assetShareData[assetId].shareToken = address(shareToken);

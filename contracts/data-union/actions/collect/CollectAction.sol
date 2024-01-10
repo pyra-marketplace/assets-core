@@ -27,8 +27,6 @@ contract CollectAction is ActionBase {
         (address collectModule, bytes memory collectModuleInitData) = abi.decode(data, (address, bytes));
         _checkCollectModule(collectModule);
 
-        CollectNFT collectNFT = new CollectNFT();
-        _assetCollectData[assetId].collectNFT = address(collectNFT);
         _assetCollectData[assetId].collectModule = collectModule;
 
         return ICollectModule(collectModule).initializeCollectModule(assetId, collectModuleInitData);
@@ -39,6 +37,9 @@ contract CollectAction is ActionBase {
         monetizerRestricted
         returns (bytes memory)
     {
+        if(_assetCollectData[assetId].collectNFT == address(0)) {
+            _assetCollectData[assetId].collectNFT = address(new CollectNFT());
+        }
         CollectNFT(_assetCollectData[assetId].collectNFT).mintCollection(collector);
 
         return ICollectModule(_assetCollectData[assetId].collectModule).processCollect(assetId, collector, data);

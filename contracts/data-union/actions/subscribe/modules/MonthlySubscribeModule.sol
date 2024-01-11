@@ -4,12 +4,12 @@ pragma solidity ^0.8.13;
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {SubscribeModuleBase} from "./base/SubscribeModuleBase.sol";
+import {DateTime} from "./libraries/DateTime.sol";
 import {IDataUnion} from "../../../IDataUnion.sol";
 
 struct AssetSubscribeDetail {
     address currency;
     uint256 amount;
-    uint256 segment;
 }
 
 contract SegmentSubscribeModule is SubscribeModuleBase {
@@ -28,11 +28,10 @@ contract SegmentSubscribeModule is SubscribeModuleBase {
         onlySubscribeAction
         returns (bytes memory)
     {
-        (address currency, uint256 amount, uint256 segment) = abi.decode(data, (address, uint256, uint256));
+        (address currency, uint256 amount) = abi.decode(data, (address, uint256));
 
         _assetSubscribeDetailById[assetId].currency = currency;
         _assetSubscribeDetailById[assetId].amount = amount;
-        _assetSubscribeDetailById[assetId].segment = segment;
 
         return data;
     }
@@ -44,36 +43,30 @@ contract SegmentSubscribeModule is SubscribeModuleBase {
     {
         AssetSubscribeDetail storage _subscribeDetail = _assetSubscribeDetailById[assetId];
 
-        (uint256 startAt, uint256 endAt, bytes memory validateData) = abi.decode(data, (uint256, uint256, bytes));
+        (uint256 year, uint256 month, uint256 count) = abi.decode(data, (uint256, uint256, uint256));
 
-        _validateDataIsExpected(validateData, _subscribeDetail.currency, _subscribeDetail.amount);
+        uint256 startAt = DateTime.timestampFromDate(year, month, 0);
+        uint256 endAt = DateTime.addMonths(startAt, count);
 
         IDataUnion.UnionAsset memory unionAsset = IDataUnion(SUBSCRIBE_ACTION.monetizer()).getUnionAsset(assetId);
 
-        if (
-            startAt > block.number || startAt < endAt || endAt > unionAsset.closeAt
-                || endAt - startAt + 1 < _subscribeDetail.segment
-        ) {
+        if(startAt > block.timestamp || endAt > unionAsset.closeAt) {
             revert InvalidSubscriptionDuration();
         }
 
-        uint256 segmentsCount = (endAt - startAt + 1) / _subscribeDetail.segment;
-
-        uint256 totalAmount = segmentsCount * _subscribeDetail.amount;
-
         uint256 remainingAmount;
         {
-            uint256 dataverseFeeAmount = _payDataverseFee(subscriber, _subscribeDetail.currency, totalAmount);
-            uint256 dappFeeAmount = _payDappFee(assetId, subscriber, _subscribeDetail.currency, totalAmount);
+            uint256 dataverseFeeAmount = _payDataverseFee(subscriber, _subscribeDetail.currency, _subscribeDetail.amount);
+            uint256 dappFeeAmount = _payDappFee(assetId, subscriber, _subscribeDetail.currency, _subscribeDetail.amount);
 
-            remainingAmount = totalAmount - dataverseFeeAmount - dappFeeAmount;
+            remainingAmount = _subscribeDetail.amount - dataverseFeeAmount - dappFeeAmount;
         }
 
         if (remainingAmount > 0) {
             IERC20(_subscribeDetail.currency).safeTransferFrom(subscriber, _assetOwner(assetId), remainingAmount);
         }
 
-        return (startAt, startAt + segmentsCount * _subscribeDetail.segment - 1);
+        return (startAt, endAt);
     }
 
     function getAssetSubscribeDetail(bytes32 assetId) external view returns (AssetSubscribeDetail memory) {

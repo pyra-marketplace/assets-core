@@ -18,7 +18,8 @@
   "license": "MIT",
   "devDependencies": {
     "@openzeppelin/contracts": "4.9.0",
-    "dataverse-contracts-test": "^1.0.0",
+    "@quant-finance/solidity-datetime": "^2.2.0",
+    "dataverse-contracts-test": "^1.0.5",
     "solhint": "^3.6.2"
   }
 }

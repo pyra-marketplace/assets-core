@@ -45,8 +45,7 @@ abstract contract CollectModuleBase is ICollectModule {
     }
 
     function _payDappFee(bytes32 assetId, address payer, address currency, uint256 amount) internal returns (uint256) {
-        IDataMonetizer.Asset memory asset = IDataMonetizer(COLLECT_ACTION.monetizer()).getAsset(assetId);
-        (address treasury, uint256 feePoint) = COLLECT_ACTION.getDappTreasuryData(asset.resourceId);
+        (address treasury, uint256 feePoint) = COLLECT_ACTION.getDappTreasuryData(assetId);
         uint256 dappFeeAmount = (amount * feePoint) / BASE_FEE_POINT;
         if (dappFeeAmount > 0) {
             IERC20(currency).safeTransferFrom(payer, treasury, dappFeeAmount);

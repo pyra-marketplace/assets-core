@@ -61,29 +61,29 @@ contract SubscribeAction is ActionBase {
         return abi.encode(startAt, endAt);
     }
 
-    function isAccessible(bytes32 assetId, address account, uint256 blockNumber) external view returns (bool) {
+    function isAccessible(bytes32 assetId, address account, uint256 timestamp) external view returns (bool) {
         if (!COLLECT_ACTION.isCollected(assetId, account)) {
             return false;
         }
         address collectNFT = COLLECT_ACTION.getAssetCollectData(assetId).collectNFT;
         uint256 balance = CollectNFT(collectNFT).balanceOf(account);
-        for (uint256 i = 0; i < balance; i++) {
+        for (uint256 i = 0; i < balance; ++i) {
             uint256 collectTokenId = CollectNFT(collectNFT).tokenOfOwnerByIndex(account, i);
-            if (isAccessible(assetId, collectTokenId, blockNumber)) {
+            if (isAccessible(assetId, collectTokenId, timestamp)) {
                 return true;
             }
         }
         return false;
     }
 
-    function isAccessible(bytes32 assetId, uint256 collectTokenId, uint256 blockNumber) public view returns (bool) {
-        if (blockNumber > block.number) {
+    function isAccessible(bytes32 assetId, uint256 collectTokenId, uint256 timestamp) public view returns (bool) {
+        if (timestamp > block.timestamp) {
             return false;
         }
 
         uint256[2][] memory targetSubscribeData = _assetSubscribeData[assetId][collectTokenId];
         for (uint256 i = 0; i < targetSubscribeData.length; ++i) {
-            if (blockNumber >= targetSubscribeData[i][0] && blockNumber <= targetSubscribeData[i][1]) {
+            if (timestamp >= targetSubscribeData[i][0] && timestamp <= targetSubscribeData[i][1]) {
                 return true;
             }
         }

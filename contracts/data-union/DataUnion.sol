@@ -62,7 +62,7 @@ contract DataUnion is DataMonetizerBase, IDataUnion {
     }
 
     function _close(bytes32 assetId, address signer) internal returns (uint256) {
-        if (block.number >= _unionCloseAt[assetId]) {
+        if (block.timestamp >= _unionCloseAt[assetId]) {
             revert UnionAlreadyClosed();
         }
 
@@ -71,8 +71,10 @@ contract DataUnion is DataMonetizerBase, IDataUnion {
             revert NotUnionOwner();
         }
 
-        _unionCloseAt[assetId] = block.number;
+        _unionCloseAt[assetId] = block.timestamp;
 
-        return block.number;
+        emit UnionClosed(assetId, signer, block.timestamp);
+
+        return block.timestamp;
     }
 }

@@ -8,6 +8,9 @@ import {IDataToken} from "./IDataToken.sol";
 contract DataToken is DataMonetizerBase, IDataToken {
     constructor(address dappTableRegistry) DataMonetizerBase("DataToken", "1", dappTableRegistry) {}
 
+    /**
+     * @inheritdoc IDataToken
+     */
     function getTokenAsset(bytes32 assetId) external view returns (TokenAsset memory) {
         string memory fileId = abi.decode(_assetById[assetId].data, (string));
         return TokenAsset({
@@ -20,5 +23,8 @@ contract DataToken is DataMonetizerBase, IDataToken {
         });
     }
 
+    /**
+     * @inheritdoc DataMonetizerBase
+     */
     function _afterPublish(PublishParams calldata publishParams, bytes32 assetId) internal virtual override {}
 }

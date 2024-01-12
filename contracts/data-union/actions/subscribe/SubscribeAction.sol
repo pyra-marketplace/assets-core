@@ -7,7 +7,7 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import {IERC721Enumerable} from "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
 import {ActionBase} from "dataverse-contracts-test/contracts/monetizer/base/ActionBase.sol";
-import {ISubscribeModule} from "./modules/interface/ISubscribeModule.sol";
+import {ISubscribeModule} from "./modules/ISubscribeModule.sol";
 import {CollectAction} from "../collect/CollectAction.sol";
 import {CollectNFT} from "../collect/token/CollectNFT.sol";
 

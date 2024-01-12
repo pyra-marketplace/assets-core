@@ -5,8 +5,8 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {IDataMonetizer} from "dataverse-contracts-test/contracts/monetizer/interfaces/IDataMonetizer.sol";
-import {CollectModuleBase} from "./base/CollectModuleBase.sol";
-import {ICollectModule} from "./interface/ICollectModule.sol";
+import {CollectModuleBase} from "./CollectModuleBase.sol";
+import {ICollectModule} from "./ICollectModule.sol";
 
 struct AssetCollectDetail {
     uint256 collectLimit;

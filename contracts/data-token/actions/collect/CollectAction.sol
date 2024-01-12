@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 import {ActionBase} from "dataverse-contracts-test/contracts/monetizer/base/ActionBase.sol";
-import {ICollectModule} from "./modules/interface/ICollectModule.sol";
+import {ICollectModule} from "./modules/ICollectModule.sol";
 import {CollectNFT} from "./token/CollectNFT.sol";
 
 contract CollectAction is ActionBase {

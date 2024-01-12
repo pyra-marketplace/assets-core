@@ -4,8 +4,8 @@ pragma solidity ^0.8.13;
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {IDataMonetizer} from "dataverse-contracts-test/contracts/monetizer/interfaces/IDataMonetizer.sol";
-import {CollectAction} from "../../CollectAction.sol";
-import {ICollectModule} from "../interface/ICollectModule.sol";
+import {CollectAction} from "../CollectAction.sol";
+import {ICollectModule} from "./ICollectModule.sol";
 
 abstract contract CollectModuleBase is ICollectModule {
     error NotCollectAction();

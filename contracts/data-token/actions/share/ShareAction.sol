@@ -9,7 +9,6 @@ import {IActionConfig} from "dataverse-contracts-test/contracts/monetizer/interf
 import {IDataMonetizer} from "dataverse-contracts-test/contracts/monetizer/interfaces/IDataMonetizer.sol";
 import {ShareToken} from "./token/ShareToken.sol";
 import {IShareSetting} from "./setting/IShareSetting.sol";
-import "forge-std/Test.sol";
 
 contract ShareAction is ActionBase {
     using SafeERC20 for IERC20;
@@ -78,17 +77,12 @@ contract ShareAction is ActionBase {
     }
 
     function _buyShare(bytes32 assetId, address trader, uint256 amount) internal {
-        console.log("==before");
         uint256 price = getBuyPrice(assetId, amount);
-        console.log("price:", price);
         uint256 ownerFeeAmount = (price * _assetShareData[assetId].feePoint) / BASE_FEE_POINT;
-        console.log("ownerFeeAmount:", ownerFeeAmount);
 
         uint256 dappFeeAmount = _payDappFee(assetId, trader, _assetShareData[assetId].currency, price);
-        console.log("dappFeeAmount:", dappFeeAmount);
 
         uint256 dataverseFeeAmount = _payDataverseFee(trader, _assetShareData[assetId].currency, price);
-        console.log("dataverseFeeAmount:", dataverseFeeAmount);
 
         IERC20(_assetShareData[assetId].currency).safeTransferFrom(trader, _assetOwner(assetId), ownerFeeAmount);
         IERC20(_assetShareData[assetId].currency).safeTransferFrom(
@@ -128,22 +122,6 @@ contract ShareAction is ActionBase {
     function getAssetShareData(bytes32 assetId) external view returns (ShareData memory) {
         return _assetShareData[assetId];
     }
-
-    // function getPrice(
-    //     uint256 supply,
-    //     uint256 amount
-    // ) public pure returns (uint256) {
-    //     uint256 sum1 = supply == 0
-    //         ? 0
-    //         : ((supply - 1) * (supply) * (2 * (supply - 1) + 1)) / 6;
-    //     uint256 sum2 = supply == 0 && amount == 1
-    //         ? 0
-    //         : ((supply - 1 + amount) *
-    //             (supply + amount) *
-    //             (2 * (supply - 1 + amount) + 1)) / 6;
-    //     uint256 summation = sum2 - sum1;
-    //     return (summation * 1 ether) / 16000;
-    // }
 
     function _payDataverseFee(address payer, address currency, uint256 amount) internal returns (uint256) {
         (address treasury, uint256 feePoint) = getDataverseTreasuryData();

@@ -13,6 +13,9 @@ abstract contract ShareSettingBase is IShareSetting, ERC165 {
         SHARE_ACTION = ShareAction(shareAction);
     }
 
+    /**
+     * @inheritdoc ERC165
+     */
     function supportsInterface(bytes4 interfaceId) public view override returns (bool) {
         return interfaceId == type(IShareSetting).interfaceId || super.supportsInterface(interfaceId);
     }

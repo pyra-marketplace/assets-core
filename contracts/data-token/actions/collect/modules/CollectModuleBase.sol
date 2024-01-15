@@ -28,6 +28,9 @@ abstract contract CollectModuleBase is ICollectModule, ERC165 {
         _;
     }
 
+    /**
+     * @inheritdoc ERC165
+     */
     function supportsInterface(bytes4 interfaceId) public view override returns (bool) {
         return interfaceId == type(ICollectModule).interfaceId || super.supportsInterface(interfaceId);
     }

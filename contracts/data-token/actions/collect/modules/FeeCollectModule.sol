@@ -24,17 +24,13 @@ contract FeeCollectModule is CollectModuleBase {
 
     mapping(bytes32 => AssetCollectDetail) internal _assetCollectDetailById;
 
-    constructor(address moduleConfig) CollectModuleBase(moduleConfig) {}
+    constructor(address collectAction) CollectModuleBase(collectAction) {}
 
     /**
      * @inheritdoc ICollectModule
      */
-    function initializeCollectModule(bytes32 assetId, bytes calldata data)
-        external
-        onlyCollectAction
-        returns (bytes memory)
-    {
-        (uint256 collectLimit, uint256 amount, address currency) = abi.decode(data, (uint256, uint256, address));
+    function initializeCollectModule(bytes32 assetId, bytes calldata data) external onlyCollectAction {
+        (uint256 collectLimit, address currency, uint256 amount) = abi.decode(data, (uint256, address, uint256));
         if (collectLimit == 0 || amount == 0) {
             revert InitParamsInvalid();
         }
@@ -43,8 +39,6 @@ contract FeeCollectModule is CollectModuleBase {
             AssetCollectDetail({collectLimit: collectLimit, currentCollects: 0, amount: amount, currency: currency});
 
         _assetCollectDetailById[assetId] = _publicationData;
-
-        return data;
     }
 
     /**

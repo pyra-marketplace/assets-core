@@ -35,8 +35,8 @@ library DateTime {
         int256 _day = int256(day);
 
         int256 __days = _day - 32075 + (1461 * (_year + 4800 + (_month - 14) / 12)) / 4
-            + (367 * (_month - 2 - ((_month - 14) / 12) * 12)) / 12
-            - (3 * ((_year + 4900 + (_month - 14) / 12) / 100)) / 4 - OFFSET19700101;
+            + (367 * (_month - 2 - ((_month - 14) / 12) * 12)) / 12 - (3 * ((_year + 4900 + (_month - 14) / 12) / 100)) / 4
+            - OFFSET19700101;
 
         _days = uint256(__days);
     }
@@ -90,11 +90,7 @@ library DateTime {
         uint256 hour,
         uint256 minute,
         uint256 second
-    )
-        internal
-        pure
-        returns (uint256 timestamp)
-    {
+    ) internal pure returns (uint256 timestamp) {
         timestamp = _daysFromDate(year, month, day) * SECONDS_PER_DAY + hour * SECONDS_PER_HOUR
             + minute * SECONDS_PER_MINUTE + second;
     }

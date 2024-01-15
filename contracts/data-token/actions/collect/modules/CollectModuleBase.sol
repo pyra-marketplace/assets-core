@@ -1,13 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
+import {ERC165} from "@openzeppelin/contracts/utils/introspection/ERC165.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {IDataMonetizer} from "dataverse-contracts-test/contracts/monetizer/interfaces/IDataMonetizer.sol";
 import {CollectAction} from "../CollectAction.sol";
 import {ICollectModule} from "./ICollectModule.sol";
 
-abstract contract CollectModuleBase is ICollectModule {
+abstract contract CollectModuleBase is ICollectModule, ERC165 {
     error NotCollectAction();
 
     using SafeERC20 for IERC20;
@@ -27,8 +28,8 @@ abstract contract CollectModuleBase is ICollectModule {
         _;
     }
 
-    function supportsInterface(bytes4 interfaceId) public pure returns (bool) {
-        return interfaceId == type(ICollectModule).interfaceId;
+    function supportsInterface(bytes4 interfaceId) public view override returns (bool) {
+        return interfaceId == type(ICollectModule).interfaceId || super.supportsInterface(interfaceId);
     }
 
     function _assetOwner(bytes32 assetId) internal returns (address) {

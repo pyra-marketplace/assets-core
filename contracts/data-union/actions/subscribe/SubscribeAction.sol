@@ -12,6 +12,9 @@ import {CollectAction} from "../collect/CollectAction.sol";
 import {CollectNFT} from "../collect/token/CollectNFT.sol";
 
 contract SubscribeAction is ActionBase {
+    error SubscribeModuleAlreadyRegistered();
+    error SubscribeModuleNotRegistered();
+    error NotSubscribeModule();
     error NotCollected();
     error CollectTokenNotEnumberable();
     error CollectTokenNotOwned();
@@ -19,21 +22,20 @@ contract SubscribeAction is ActionBase {
     using SafeERC20 for IERC20;
 
     CollectAction public immutable COLLECT_ACTION;
+
+    mapping(address => bool) public isSubscribeModuleRegistered;
     mapping(bytes32 => mapping(uint256 => uint256[2][])) _assetSubscribeData;
 
     constructor(address actionConfig, address collectAction, address monetizer) ActionBase(actionConfig, monetizer) {
         COLLECT_ACTION = CollectAction(collectAction);
     }
 
-    function initializeAction(bytes32 assetId, bytes calldata data)
-        external
-        override
-        monetizerRestricted
-        returns (bytes memory)
-    {
+    function initializeAction(bytes32 assetId, bytes calldata data) external override monetizerRestricted {
         (address subscribeModule, bytes memory subscribeInitData) = abi.decode(data, (address, bytes));
-
-        return ISubscribeModule(subscribeModule).initializeSubscribeModule(assetId, subscribeInitData);
+        if (!isSubscribeModuleRegistered[subscribeModule]) {
+            revert SubscribeModuleNotRegistered();
+        }
+        ISubscribeModule(subscribeModule).initializeSubscribeModule(assetId, subscribeInitData);
     }
 
     function processAction(bytes32 assetId, address subscriber, bytes calldata data)
@@ -89,5 +91,15 @@ contract SubscribeAction is ActionBase {
         }
 
         return false;
+    }
+
+    function registerCollectModule(address subscribeModule) external {
+        if (isSubscribeModuleRegistered[subscribeModule]) {
+            revert SubscribeModuleAlreadyRegistered();
+        }
+        if (!IERC165(subscribeModule).supportsInterface(type(ISubscribeModule).interfaceId)) {
+            revert NotSubscribeModule();
+        }
+        isSubscribeModuleRegistered[subscribeModule] = true;
     }
 }

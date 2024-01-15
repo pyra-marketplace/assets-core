@@ -24,14 +24,12 @@ contract SegmentSubscribeModule is SubscribeModuleBase {
 
     constructor(address subscribeAction) SubscribeModuleBase(subscribeAction) {}
 
-    function initializeSubscribeModule(
-        bytes32 assetId,
-        bytes calldata data
-    ) external onlySubscribeAction returns (bytes memory) {
-        (address currency, uint256 amount) = abi.decode(
-            data,
-            (address, uint256)
-        );
+    function initializeSubscribeModule(bytes32 assetId, bytes calldata data)
+        external
+        onlySubscribeAction
+        returns (bytes memory)
+    {
+        (address currency, uint256 amount) = abi.decode(data, (address, uint256));
 
         _assetSubscribeDetailById[assetId].currency = currency;
         _assetSubscribeDetailById[assetId].amount = amount;
@@ -39,18 +37,14 @@ contract SegmentSubscribeModule is SubscribeModuleBase {
         return data;
     }
 
-    function processSubscribe(
-        bytes32 assetId,
-        address subscriber,
-        bytes memory data
-    ) external onlySubscribeAction returns (uint256, uint256) {
-        AssetSubscribeDetail
-            storage _subscribeDetail = _assetSubscribeDetailById[assetId];
+    function processSubscribe(bytes32 assetId, address subscriber, bytes memory data)
+        external
+        onlySubscribeAction
+        returns (uint256, uint256)
+    {
+        AssetSubscribeDetail storage _subscribeDetail = _assetSubscribeDetailById[assetId];
 
-        (uint256 year, uint256 month, uint256 count) = abi.decode(
-            data,
-            (uint256, uint256, uint256)
-        );
+        (uint256 year, uint256 month, uint256 count) = abi.decode(data, (uint256, uint256, uint256));
 
         if (!DateTime.isValidDate(year, month, 1)) {
             revert InvalidDate();
@@ -58,65 +52,38 @@ contract SegmentSubscribeModule is SubscribeModuleBase {
         uint256 startAt = DateTime.timestampFromDate(year, month, 1);
         uint256 endAt = DateTime.addMonths(startAt, count);
 
-        IDataUnion.UnionAsset memory unionAsset = IDataUnion(
-            SUBSCRIBE_ACTION.monetizer()
-        ).getUnionAsset(assetId);
+        IDataUnion.UnionAsset memory unionAsset = IDataUnion(SUBSCRIBE_ACTION.monetizer()).getUnionAsset(assetId);
 
         if (
-            startAt > block.timestamp ||
-            endAt < unionAsset.publishAt ||
-            DateTime.addMonths(startAt, 1) <= unionAsset.publishAt ||
-            DateTime.subMonths(endAt, 1) >= unionAsset.closeAt
+            startAt > block.timestamp || endAt < unionAsset.publishAt
+                || DateTime.addMonths(startAt, 1) <= unionAsset.publishAt
+                || DateTime.subMonths(endAt, 1) >= unionAsset.closeAt
         ) {
             revert InvalidSubscriptionDuration();
         }
 
         uint256 remainingAmount;
         {
-            uint256 dataverseFeeAmount = _payDataverseFee(
-                subscriber,
-                _subscribeDetail.currency,
-                _subscribeDetail.amount
-            );
-            uint256 dappFeeAmount = _payDappFee(
-                assetId,
-                subscriber,
-                _subscribeDetail.currency,
-                _subscribeDetail.amount
-            );
+            uint256 dataverseFeeAmount =
+                _payDataverseFee(subscriber, _subscribeDetail.currency, _subscribeDetail.amount);
+            uint256 dappFeeAmount = _payDappFee(assetId, subscriber, _subscribeDetail.currency, _subscribeDetail.amount);
 
-            remainingAmount =
-                _subscribeDetail.amount -
-                dataverseFeeAmount -
-                dappFeeAmount;
+            remainingAmount = _subscribeDetail.amount - dataverseFeeAmount - dappFeeAmount;
         }
 
         if (remainingAmount > 0) {
-            IERC20(_subscribeDetail.currency).safeTransferFrom(
-                subscriber,
-                _assetOwner(assetId),
-                remainingAmount
-            );
+            IERC20(_subscribeDetail.currency).safeTransferFrom(subscriber, _assetOwner(assetId), remainingAmount);
         }
 
         return (startAt, endAt);
     }
 
-    function getAssetSubscribeDetail(
-        bytes32 assetId
-    ) external view returns (AssetSubscribeDetail memory) {
+    function getAssetSubscribeDetail(bytes32 assetId) external view returns (AssetSubscribeDetail memory) {
         return _assetSubscribeDetailById[assetId];
     }
 
-    function _validateDataIsExpected(
-        bytes memory data,
-        address currency,
-        uint256 amount
-    ) internal pure {
-        (address decodedCurrency, uint256 decodedAmount) = abi.decode(
-            data,
-            (address, uint256)
-        );
+    function _validateDataIsExpected(bytes memory data, address currency, uint256 amount) internal pure {
+        (address decodedCurrency, uint256 decodedAmount) = abi.decode(data, (address, uint256));
         if (decodedAmount != amount || decodedCurrency != currency) {
             revert ModuleDataMismatch();
         }

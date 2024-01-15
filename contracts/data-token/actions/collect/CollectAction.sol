@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
+import {IERC165} from "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 import {ActionBase} from "dataverse-contracts-test/contracts/monetizer/base/ActionBase.sol";
 import {ICollectModule} from "./modules/ICollectModule.sol";
 import {CollectNFT} from "./token/CollectNFT.sol";
@@ -12,6 +13,7 @@ contract CollectAction is ActionBase {
     }
 
     error CollectModuleAlreadyRegistered();
+    error CollectModuleNotRegistered();
     error NotCollectModule();
 
     mapping(address => bool) public isCollectModuleRegistered;
@@ -19,17 +21,15 @@ contract CollectAction is ActionBase {
 
     constructor(address actionConfig, address monetizer) ActionBase(actionConfig, monetizer) {}
 
-    function initializeAction(bytes32 assetId, bytes calldata data)
-        external
-        monetizerRestricted
-        returns (bytes memory)
-    {
+    function initializeAction(bytes32 assetId, bytes calldata data) external monetizerRestricted {
         (address collectModule, bytes memory collectModuleInitData) = abi.decode(data, (address, bytes));
-        _checkCollectModule(collectModule);
+        if (!isCollectModuleRegistered[collectModule]) {
+            revert CollectModuleNotRegistered();
+        }
 
         _assetCollectData[assetId].collectModule = collectModule;
 
-        return ICollectModule(collectModule).initializeCollectModule(assetId, collectModuleInitData);
+        ICollectModule(collectModule).initializeCollectModule(assetId, collectModuleInitData);
     }
 
     function processAction(bytes32 assetId, address collector, bytes calldata data)
@@ -37,7 +37,7 @@ contract CollectAction is ActionBase {
         monetizerRestricted
         returns (bytes memory)
     {
-        if(_assetCollectData[assetId].collectNFT == address(0)) {
+        if (_assetCollectData[assetId].collectNFT == address(0)) {
             _assetCollectData[assetId].collectNFT = address(new CollectNFT());
         }
         CollectNFT(_assetCollectData[assetId].collectNFT).mintCollection(collector);
@@ -62,16 +62,12 @@ contract CollectAction is ActionBase {
     }
 
     function registerCollectModule(address collectModule) external {
-        _checkCollectModule(collectModule);
-        isCollectModuleRegistered[collectModule] = true;
-    }
-
-    function _checkCollectModule(address collectModule) internal view {
         if (isCollectModuleRegistered[collectModule]) {
             revert CollectModuleAlreadyRegistered();
         }
-        if (!ICollectModule(collectModule).supportsInterface(type(ICollectModule).interfaceId)) {
+        if (!IERC165(collectModule).supportsInterface(type(ICollectModule).interfaceId)) {
             revert NotCollectModule();
         }
+        isCollectModuleRegistered[collectModule] = true;
     }
 }

@@ -40,7 +40,6 @@ contract DataTokenTest is BaseTest {
         publisher = makeAddr("publisher");
         actor = makeAddr("actor");
 
-        // erc20Mock.mint(publisher, 1000 ether);
         erc20Mock.mint(actor, 1e30);
 
         dataToken = new DataToken(address(dappTableRegistry));
@@ -52,66 +51,66 @@ contract DataTokenTest is BaseTest {
         collectAction.registerCollectModule(address(feeCollectModule));
     }
 
-    // function test_Publish_WhenCollectAction() public {
-    //     bytes memory data = abi.encode(testFileId);
-    //     address[] memory actions = new address[](1);
-    //     bytes[] memory actionInitDatas = new bytes[](1);
-    //     bytes32[] memory images = new bytes32[](0);
+    function test_Publish_WhenCollectAction() public {
+        bytes memory data = abi.encode(testFileId);
+        address[] memory actions = new address[](1);
+        bytes[] memory actionInitDatas = new bytes[](1);
+        bytes32[] memory images = new bytes32[](0);
 
-    //     actions[0] = address(collectAction);
-    //     actionInitDatas[0] = abi.encode(address(feeCollectModule), abi.encode(collectLimit, address(erc20Mock), amount));
-    //     IDataMonetizer.PublishParams memory publishParams = IDataMonetizer.PublishParams({
-    //         resourceId: testResourceId,
-    //         data: data,
-    //         actions: actions,
-    //         actionInitDatas: actionInitDatas,
-    //         images: images
-    //     });
+        actions[0] = address(collectAction);
+        actionInitDatas[0] = abi.encode(address(feeCollectModule), abi.encode(collectLimit, address(erc20Mock), amount));
+        IDataMonetizer.PublishParams memory publishParams = IDataMonetizer.PublishParams({
+            resourceId: testResourceId,
+            data: data,
+            actions: actions,
+            actionInitDatas: actionInitDatas,
+            images: images
+        });
 
-    //     vm.prank(publisher);
-    //     bytes32 assetId = dataToken.publish(publishParams);
+        vm.prank(publisher);
+        bytes32 assetId = dataToken.publish(publishParams);
 
-    //     IDataToken.TokenAsset memory tokenAsset = dataToken.getTokenAsset(assetId);
-    //     assertEq(tokenAsset.resourceId, testResourceId);
-    //     assertEq(tokenAsset.fileId, testFileId);
-    //     assertEq(tokenAsset.publishAt, block.timestamp);
-    //     assertEq(tokenAsset.actions, actions);
-    //     assertEq(tokenAsset.images.length, 0);
-    // }
+        IDataToken.TokenAsset memory tokenAsset = dataToken.getTokenAsset(assetId);
+        assertEq(tokenAsset.resourceId, testResourceId);
+        assertEq(tokenAsset.fileId, testFileId);
+        assertEq(tokenAsset.publishAt, block.timestamp);
+        assertEq(tokenAsset.actions, actions);
+        assertEq(tokenAsset.images.length, 0);
+    }
 
-    // function test_Act_WhenCollectAction() public {
-    //     bytes memory data = abi.encode(testFileId);
-    //     address[] memory actions = new address[](1);
-    //     bytes[] memory actionInitDatas = new bytes[](1);
-    //     bytes32[] memory images = new bytes32[](0);
+    function test_Act_WhenCollectAction() public {
+        bytes memory data = abi.encode(testFileId);
+        address[] memory actions = new address[](1);
+        bytes[] memory actionInitDatas = new bytes[](1);
+        bytes32[] memory images = new bytes32[](0);
 
-    //     actions[0] = address(collectAction);
-    //     actionInitDatas[0] = abi.encode(address(feeCollectModule), abi.encode(collectLimit, address(erc20Mock), amount));
-    //     IDataMonetizer.PublishParams memory publishParams = IDataMonetizer.PublishParams({
-    //         resourceId: testResourceId,
-    //         data: data,
-    //         actions: actions,
-    //         actionInitDatas: actionInitDatas,
-    //         images: images
-    //     });
+        actions[0] = address(collectAction);
+        actionInitDatas[0] = abi.encode(address(feeCollectModule), abi.encode(collectLimit, address(erc20Mock), amount));
+        IDataMonetizer.PublishParams memory publishParams = IDataMonetizer.PublishParams({
+            resourceId: testResourceId,
+            data: data,
+            actions: actions,
+            actionInitDatas: actionInitDatas,
+            images: images
+        });
 
-    //     vm.prank(publisher);
-    //     bytes32 assetId = dataToken.publish(publishParams);
+        vm.prank(publisher);
+        bytes32 assetId = dataToken.publish(publishParams);
 
-    //     bytes[] memory actionProcessDatas = new bytes[](1);
-    //     actionProcessDatas[0] = abi.encode(address(erc20Mock), amount);
+        bytes[] memory actionProcessDatas = new bytes[](1);
+        actionProcessDatas[0] = abi.encode(address(erc20Mock), amount);
 
-    //     IDataMonetizer.ActParams memory actParams = IDataMonetizer.ActParams({
-    //         assetId: assetId,
-    //         actions: actions,
-    //         actionProcessDatas: actionProcessDatas
-    //     });
+        IDataMonetizer.ActParams memory actParams = IDataMonetizer.ActParams({
+            assetId: assetId,
+            actions: actions,
+            actionProcessDatas: actionProcessDatas
+        });
 
-    //     vm.startPrank(actor);
-    //     erc20Mock.approve(address(feeCollectModule), amount);
-    //     dataToken.act(actParams);
-    //     vm.stopPrank();
-    // }
+        vm.startPrank(actor);
+        erc20Mock.approve(address(feeCollectModule), amount);
+        dataToken.act(actParams);
+        vm.stopPrank();
+    }
 
     function test_Publish_WhenShareAction() public {
         bytes memory data = abi.encode(testFileId);

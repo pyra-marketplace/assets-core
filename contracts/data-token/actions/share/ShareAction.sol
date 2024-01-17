@@ -63,20 +63,23 @@ contract ShareAction is ActionBase {
         returns (bytes memory)
     {
         (TradeType tradeType, uint256 amount) = abi.decode(data, (TradeType, uint256));
+
+        uint256 price;
         if (tradeType == TradeType.Buy) {
-            _buyShare(assetId, trader, amount);
+            price = _buyShare(assetId, trader, amount);
         }
         if (tradeType == TradeType.Sell) {
-            _sellShare(assetId, trader, amount);
+            price = _sellShare(assetId, trader, amount);
         }
-        return data;
+        
+        return abi.encode(price);
     }
 
     function isAccessible(bytes32 assetId, address account) external view returns (bool) {
         return IShareSetting(_assetShareData[assetId].setting).isAccessible(assetId, account);
     }
 
-    function _buyShare(bytes32 assetId, address trader, uint256 amount) internal {
+    function _buyShare(bytes32 assetId, address trader, uint256 amount) internal returns (uint256) {
         uint256 price = getBuyPrice(assetId, amount);
         uint256 ownerFeeAmount = (price * _assetShareData[assetId].feePoint) / BASE_FEE_POINT;
 
@@ -92,9 +95,11 @@ contract ShareAction is ActionBase {
         ShareToken(_assetShareData[assetId].shareToken).mint(trader, amount);
         _assetShareData[assetId].totalSupply += amount;
         _assetShareData[assetId].totalValue += price;
+
+        return price;
     }
 
-    function _sellShare(bytes32 assetId, address trader, uint256 amount) internal {
+    function _sellShare(bytes32 assetId, address trader, uint256 amount) internal returns (uint256) {
         uint256 price = getSellPrice(assetId, amount);
         uint256 ownerFeeAmount = (price * _assetShareData[assetId].feePoint) / BASE_FEE_POINT;
         uint256 dappFeeAmount = _payDappFee(assetId, trader, _assetShareData[assetId].currency, price);
@@ -107,6 +112,8 @@ contract ShareAction is ActionBase {
         ShareToken(_assetShareData[assetId].shareToken).burn(trader, amount);
         _assetShareData[assetId].totalSupply -= amount;
         _assetShareData[assetId].totalValue -= price;
+
+        return price;
     }
 
     function getBuyPrice(bytes32 assetId, uint256 amount) public view returns (uint256) {

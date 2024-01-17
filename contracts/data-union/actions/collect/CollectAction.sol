@@ -40,9 +40,11 @@ contract CollectAction is ActionBase {
         if (_assetCollectData[assetId].collectNFT == address(0)) {
             _assetCollectData[assetId].collectNFT = address(new CollectNFT());
         }
-        CollectNFT(_assetCollectData[assetId].collectNFT).mintCollection(collector);
+        uint256 collectionId = CollectNFT(_assetCollectData[assetId].collectNFT).mintCollection(collector);
 
-        return ICollectModule(_assetCollectData[assetId].collectModule).processCollect(assetId, collector, data);
+        bytes memory collectModuleReturnData = ICollectModule(_assetCollectData[assetId].collectModule).processCollect(assetId, collector, data);
+
+        return abi.encode(collectionId, collectModuleReturnData);
     }
 
     function isCollected(bytes32 assetId, address account) external view returns (bool) {

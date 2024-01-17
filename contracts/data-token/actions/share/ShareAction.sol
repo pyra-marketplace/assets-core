@@ -35,7 +35,7 @@ contract ShareAction is ActionBase {
 
     function initializeAction(bytes32 assetId, bytes calldata data) external monetizerRestricted {
         (
-            address creator,
+            address publisher,
             string memory name,
             string memory symbol,
             address currency,
@@ -48,7 +48,7 @@ contract ShareAction is ActionBase {
         _assetShareData[assetId].feePoint = feePoint;
         _assetShareData[assetId].shareToken = address(shareToken);
 
-        shareToken.mint(creator, initialSupply);
+        shareToken.mint(publisher, initialSupply);
         _assetShareData[assetId].totalSupply = initialSupply;
 
         if (!IERC165(setting).supportsInterface(type(IShareSetting).interfaceId)) {

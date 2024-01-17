@@ -5,7 +5,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {ShareSettingBase} from "./ShareSettingBase.sol";
 import {ShareAction} from "../ShareAction.sol";
 
-contract ShareSetting is ShareSettingBase {
+contract DefaultShareSetting is ShareSettingBase {
     constructor(address shareAction) ShareSettingBase(shareAction) {}
 
     function isAccessible(bytes32 assetId, address account) external view returns (bool) {

@@ -9,7 +9,7 @@ import {CollectModuleBase} from "./CollectModuleBase.sol";
 import {ICollectModule} from "./ICollectModule.sol";
 
 struct AssetCollectDetail {
-    uint256 collectLimit;
+    uint256 totalSupply;
     uint256 currentCollects;
     uint256 amount;
     address currency;
@@ -17,7 +17,7 @@ struct AssetCollectDetail {
 
 contract FeeCollectModule is CollectModuleBase {
     error InitParamsInvalid();
-    error ExceedCollectLimit();
+    error ExceedTotalSupply();
     error ModuleDataMismatch();
 
     using SafeERC20 for IERC20;
@@ -30,13 +30,13 @@ contract FeeCollectModule is CollectModuleBase {
      * @inheritdoc ICollectModule
      */
     function initializeCollectModule(bytes32 assetId, bytes calldata data) external onlyCollectAction {
-        (uint256 collectLimit, address currency, uint256 amount) = abi.decode(data, (uint256, address, uint256));
-        if (collectLimit == 0 || amount == 0) {
+        (uint256 totalSupply, address currency, uint256 amount) = abi.decode(data, (uint256, address, uint256));
+        if (totalSupply == 0 || amount == 0) {
             revert InitParamsInvalid();
         }
 
         AssetCollectDetail memory _publicationData =
-            AssetCollectDetail({collectLimit: collectLimit, currentCollects: 0, amount: amount, currency: currency});
+            AssetCollectDetail({totalSupply: totalSupply, currentCollects: 0, amount: amount, currency: currency});
 
         _assetCollectDetailById[assetId] = _publicationData;
     }
@@ -50,8 +50,8 @@ contract FeeCollectModule is CollectModuleBase {
         returns (bytes memory)
     {
         AssetCollectDetail storage targetCollectDetail = _assetCollectDetailById[assetId];
-        if (targetCollectDetail.currentCollects >= targetCollectDetail.collectLimit) {
-            revert ExceedCollectLimit();
+        if (targetCollectDetail.currentCollects >= targetCollectDetail.totalSupply) {
+            revert ExceedTotalSupply();
         }
         _validateDataIsExpected(data, targetCollectDetail.currency, targetCollectDetail.amount);
 

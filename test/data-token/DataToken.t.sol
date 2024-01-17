@@ -7,7 +7,7 @@ import {IDataMonetizer} from "dataverse-contracts-test/contracts/monetizer/inter
 import {CollectAction} from "../../contracts/data-token/actions/collect/CollectAction.sol";
 import {FeeCollectModule} from "../../contracts/data-token/actions/collect/modules/FeeCollectModule.sol";
 import {ShareAction} from "../../contracts/data-token/actions/share/ShareAction.sol";
-import {ShareSetting} from "../../contracts/data-token/actions/share/setting/ShareSetting.sol";
+import {DefaultShareSetting} from "../../contracts/data-token/actions/share/setting/DefaultShareSetting.sol";
 import {BaseTest} from "../Base.t.sol";
 
 contract DataTokenTest is BaseTest {
@@ -15,7 +15,7 @@ contract DataTokenTest is BaseTest {
     CollectAction collectAction;
     FeeCollectModule feeCollectModule;
     ShareAction shareAction;
-    ShareSetting shareSetting;
+    DefaultShareSetting shareSetting;
 
     address publisher;
     address actor;
@@ -23,7 +23,7 @@ contract DataTokenTest is BaseTest {
     string testFileId = "testFileId";
 
     // CollectAction: initialize
-    uint256 collectLimit = 100;
+    uint256 totalSupply = 100;
     uint256 amount = 1e6;
 
     // ShareAction: initialize
@@ -46,7 +46,7 @@ contract DataTokenTest is BaseTest {
         collectAction = new CollectAction(address(actionConfig), address(dataToken));
         feeCollectModule = new FeeCollectModule(address(collectAction));
         shareAction = new ShareAction(address(actionConfig), address(dataToken));
-        shareSetting = new ShareSetting(address(shareAction));
+        shareSetting = new DefaultShareSetting(address(shareAction));
 
         collectAction.registerCollectModule(address(feeCollectModule));
     }
@@ -58,7 +58,7 @@ contract DataTokenTest is BaseTest {
         bytes32[] memory images = new bytes32[](0);
 
         actions[0] = address(collectAction);
-        actionInitDatas[0] = abi.encode(address(feeCollectModule), abi.encode(collectLimit, address(erc20Mock), amount));
+        actionInitDatas[0] = abi.encode(address(feeCollectModule), abi.encode(totalSupply, address(erc20Mock), amount));
         IDataMonetizer.PublishParams memory publishParams = IDataMonetizer.PublishParams({
             resourceId: testResourceId,
             data: data,
@@ -85,7 +85,7 @@ contract DataTokenTest is BaseTest {
         bytes32[] memory images = new bytes32[](0);
 
         actions[0] = address(collectAction);
-        actionInitDatas[0] = abi.encode(address(feeCollectModule), abi.encode(collectLimit, address(erc20Mock), amount));
+        actionInitDatas[0] = abi.encode(address(feeCollectModule), abi.encode(totalSupply, address(erc20Mock), amount));
         IDataMonetizer.PublishParams memory publishParams = IDataMonetizer.PublishParams({
             resourceId: testResourceId,
             data: data,

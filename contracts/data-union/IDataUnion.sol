@@ -6,6 +6,7 @@ import {IDataMonetizer} from "dataverse-contracts-test/contracts/monetizer/inter
 interface IDataUnion is IDataMonetizer {
     struct UnionAsset {
         string resourceId;
+        string folderId;
         uint256 publishAt;
         uint256 closeAt;
         uint256 publicationId;

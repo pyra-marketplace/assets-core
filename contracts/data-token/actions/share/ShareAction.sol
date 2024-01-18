@@ -3,12 +3,13 @@ pragma solidity ^0.8.13;
 
 import {IERC165} from "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {ActionBase} from "dataverse-contracts-test/contracts/monetizer/base/ActionBase.sol";
 import {IActionConfig} from "dataverse-contracts-test/contracts/monetizer/interfaces/IActionConfig.sol";
 import {IDataMonetizer} from "dataverse-contracts-test/contracts/monetizer/interfaces/IDataMonetizer.sol";
 import {ShareToken} from "./token/ShareToken.sol";
-import {IShareSetting} from "./setting/IShareSetting.sol";
+import {ICurve} from "./curve/ICurve.sol";
 
 contract ShareAction is ActionBase {
     using SafeERC20 for IERC20;
@@ -24,10 +25,11 @@ contract ShareAction is ActionBase {
         uint256 totalSupply;
         address currency;
         uint256 feePoint;
-        address setting;
+        uint256 accessibleShareAmount;
+        address curve;
     }
 
-    error InvalidShareSetting();
+    error InvalidCurve();
 
     mapping(bytes32 => ShareData) internal _assetShareData;
 
@@ -41,20 +43,22 @@ contract ShareAction is ActionBase {
             address currency,
             uint256 feePoint,
             uint256 initialSupply,
-            address setting
-        ) = abi.decode(data, (address, string, string, address, uint256, uint256, address));
+            uint256 accessibleShareAmount,
+            address curve
+        ) = abi.decode(data, (address, string, string, address, uint256, uint256, uint256, address));
         ShareToken shareToken = new ShareToken(name, symbol);
         _assetShareData[assetId].currency = currency;
         _assetShareData[assetId].feePoint = feePoint;
-        _assetShareData[assetId].shareToken = address(shareToken);
+        _assetShareData[assetId].totalSupply = initialSupply;
+        _assetShareData[assetId].accessibleShareAmount = accessibleShareAmount;
 
         shareToken.mint(publisher, initialSupply);
-        _assetShareData[assetId].totalSupply = initialSupply;
+        _assetShareData[assetId].shareToken = address(shareToken);
 
-        if (!IERC165(setting).supportsInterface(type(IShareSetting).interfaceId)) {
-            revert InvalidShareSetting();
+        if (!IERC165(curve).supportsInterface(type(ICurve).interfaceId)) {
+            revert InvalidCurve();
         }
-        _assetShareData[assetId].setting = setting;
+        _assetShareData[assetId].curve = curve;
     }
 
     function processAction(bytes32 assetId, address trader, bytes calldata data)
@@ -71,12 +75,13 @@ contract ShareAction is ActionBase {
         if (tradeType == TradeType.Sell) {
             price = _sellShare(assetId, trader, amount);
         }
-        
+
         return abi.encode(price);
     }
 
     function isAccessible(bytes32 assetId, address account) external view returns (bool) {
-        return IShareSetting(_assetShareData[assetId].setting).isAccessible(assetId, account);
+        return IERC20(_assetShareData[assetId].shareToken).balanceOf(account)
+            >= _assetShareData[assetId].accessibleShareAmount;
     }
 
     function _buyShare(bytes32 assetId, address trader, uint256 amount) internal returns (uint256) {
@@ -117,12 +122,16 @@ contract ShareAction is ActionBase {
     }
 
     function getBuyPrice(bytes32 assetId, uint256 amount) public view returns (uint256) {
-        return IShareSetting(_assetShareData[assetId].setting).getPrice(_assetShareData[assetId].totalSupply, amount);
+        return ICurve(_assetShareData[assetId].curve).getPrice(
+            _assetShareData[assetId].totalSupply, IERC20Metadata(_assetShareData[assetId].currency).decimals(), amount
+        );
     }
 
     function getSellPrice(bytes32 assetId, uint256 amount) public view returns (uint256) {
-        return IShareSetting(_assetShareData[assetId].setting).getPrice(
-            _assetShareData[assetId].totalSupply - amount, amount
+        return ICurve(_assetShareData[assetId].curve).getPrice(
+            _assetShareData[assetId].totalSupply - amount,
+            IERC20Metadata(_assetShareData[assetId].currency).decimals(),
+            amount
         );
     }
 

@@ -7,7 +7,7 @@ import {IDataMonetizer} from "dataverse-contracts-test/contracts/monetizer/inter
 import {CollectAction} from "../../contracts/data-token/actions/collect/CollectAction.sol";
 import {FeeCollectModule} from "../../contracts/data-token/actions/collect/modules/FeeCollectModule.sol";
 import {ShareAction} from "../../contracts/data-token/actions/share/ShareAction.sol";
-import {DefaultShareSetting} from "../../contracts/data-token/actions/share/setting/DefaultShareSetting.sol";
+import {DefaultCurve} from "../../contracts/data-token/actions/share/curve/DefaultCurve.sol";
 import {BaseTest} from "../Base.t.sol";
 
 contract DataTokenTest is BaseTest {
@@ -15,7 +15,7 @@ contract DataTokenTest is BaseTest {
     CollectAction collectAction;
     FeeCollectModule feeCollectModule;
     ShareAction shareAction;
-    DefaultShareSetting shareSetting;
+    DefaultCurve defaultCurve;
 
     address publisher;
     address actor;
@@ -31,9 +31,10 @@ contract DataTokenTest is BaseTest {
     string shareTokenSymbol = "TEST";
     uint256 assetOwnerFeePoint = 50;
     uint256 initialSupply = 500;
+    uint256 accessibleShareAmount = 20;
     // ShareAction: process
     uint256 buyShareAmount = 100;
-    uint256 sellShareAmount = 50;
+    uint256 sellShareAmount = 90;
 
     function setUp() public {
         _baseSetup();
@@ -46,7 +47,7 @@ contract DataTokenTest is BaseTest {
         collectAction = new CollectAction(address(actionConfig), address(dataToken));
         feeCollectModule = new FeeCollectModule(address(collectAction));
         shareAction = new ShareAction(address(actionConfig), address(dataToken));
-        shareSetting = new DefaultShareSetting(address(shareAction));
+        defaultCurve = new DefaultCurve();
 
         collectAction.registerCollectModule(address(feeCollectModule));
     }
@@ -100,11 +101,8 @@ contract DataTokenTest is BaseTest {
         bytes[] memory actionProcessDatas = new bytes[](1);
         actionProcessDatas[0] = abi.encode(address(erc20Mock), amount);
 
-        IDataMonetizer.ActParams memory actParams = IDataMonetizer.ActParams({
-            assetId: assetId,
-            actions: actions,
-            actionProcessDatas: actionProcessDatas
-        });
+        IDataMonetizer.ActParams memory actParams =
+            IDataMonetizer.ActParams({assetId: assetId, actions: actions, actionProcessDatas: actionProcessDatas});
 
         vm.startPrank(actor);
         erc20Mock.approve(address(feeCollectModule), amount);
@@ -126,7 +124,8 @@ contract DataTokenTest is BaseTest {
             address(erc20Mock),
             assetOwnerFeePoint,
             initialSupply,
-            address(shareSetting)
+            accessibleShareAmount,
+            address(defaultCurve)
         );
         IDataMonetizer.PublishParams memory publishParams = IDataMonetizer.PublishParams({
             resourceId: testResourceId,
@@ -161,7 +160,8 @@ contract DataTokenTest is BaseTest {
             address(erc20Mock),
             assetOwnerFeePoint,
             initialSupply,
-            address(shareSetting)
+            accessibleShareAmount,
+            address(defaultCurve)
         );
         IDataMonetizer.PublishParams memory publishParams = IDataMonetizer.PublishParams({
             resourceId: testResourceId,
@@ -174,6 +174,8 @@ contract DataTokenTest is BaseTest {
         vm.prank(publisher);
         bytes32 assetId = dataToken.publish(publishParams);
 
+        assertFalse(shareAction.isAccessible(assetId, actor));
+
         bytes[] memory actionProcessDatas = new bytes[](1);
         actionProcessDatas[0] = abi.encode(ShareAction.TradeType.Buy, buyShareAmount);
 
@@ -184,5 +186,19 @@ contract DataTokenTest is BaseTest {
         erc20Mock.approve(address(shareAction), shareAction.getBuyPrice(assetId, buyShareAmount));
         dataToken.act(actParams);
         vm.stopPrank();
+
+        assertTrue(shareAction.isAccessible(assetId, actor));
+
+        actionProcessDatas[0] = abi.encode(ShareAction.TradeType.Sell, sellShareAmount);
+
+        actParams =
+            IDataMonetizer.ActParams({assetId: assetId, actions: actions, actionProcessDatas: actionProcessDatas});
+
+        vm.startPrank(actor);
+        erc20Mock.approve(address(shareAction), shareAction.getSellPrice(assetId, sellShareAmount));
+        dataToken.act(actParams);
+        vm.stopPrank();
+
+        assertFalse(shareAction.isAccessible(assetId, actor));
     }
 }

@@ -42,7 +42,8 @@ contract CollectAction is ActionBase {
         }
         uint256 collectionId = CollectNFT(_assetCollectData[assetId].collectNFT).mintCollection(collector);
 
-        bytes memory collectModuleReturnData = ICollectModule(_assetCollectData[assetId].collectModule).processCollect(assetId, collector, data);
+        bytes memory collectModuleReturnData =
+            ICollectModule(_assetCollectData[assetId].collectModule).processCollect(assetId, collector, data);
 
         return abi.encode(collectionId, collectModuleReturnData);
     }

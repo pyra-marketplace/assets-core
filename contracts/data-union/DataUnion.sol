@@ -17,8 +17,10 @@ contract DataUnion is DataMonetizerBase, IDataUnion {
      * @inheritdoc IDataUnion
      */
     function getUnionAsset(bytes32 assetId) external view returns (UnionAsset memory) {
+        (string memory folderId) = abi.decode(_assetById[assetId].data, (string));
         return UnionAsset({
             resourceId: _assetById[assetId].resourceId,
+            folderId: folderId,
             publishAt: _assetById[assetId].publishAt,
             closeAt: _unionCloseAt[assetId],
             publicationId: _assetById[assetId].publicationId,

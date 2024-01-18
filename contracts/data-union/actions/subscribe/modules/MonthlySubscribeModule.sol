@@ -12,7 +12,7 @@ struct AssetSubscribeDetail {
     uint256 amount;
 }
 
-contract SegmentSubscribeModule is SubscribeModuleBase {
+contract MonthlySubscribeModule is SubscribeModuleBase {
     error InvalidInitParams();
     error InvalidDate();
     error InvalidSubscriptionDuration();

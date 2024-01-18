@@ -49,16 +49,16 @@ contract SubscribeAction is ActionBase {
         }
 
         address collectNFT = COLLECT_ACTION.getAssetCollectData(assetId).collectNFT;
-        (uint256 collectTokenId, address subscribeModule, bytes memory subscribeProcessData) =
+        (uint256 collectionId, address subscribeModule, bytes memory subscribeProcessData) =
             abi.decode(data, (uint256, address, bytes));
 
-        if (CollectNFT(collectNFT).ownerOf(collectTokenId) != subscriber) {
+        if (CollectNFT(collectNFT).ownerOf(collectionId) != subscriber) {
             revert CollectTokenNotOwned();
         }
 
         (uint256 startAt, uint256 endAt) =
             ISubscribeModule(subscribeModule).processSubscribe(assetId, subscriber, subscribeProcessData);
-        _assetSubscribeData[assetId][collectTokenId].push([startAt, endAt]);
+        _assetSubscribeData[assetId][collectionId].push([startAt, endAt]);
 
         return abi.encode(startAt, endAt);
     }
@@ -70,20 +70,20 @@ contract SubscribeAction is ActionBase {
         address collectNFT = COLLECT_ACTION.getAssetCollectData(assetId).collectNFT;
         uint256 balance = CollectNFT(collectNFT).balanceOf(account);
         for (uint256 i = 0; i < balance; ++i) {
-            uint256 collectTokenId = CollectNFT(collectNFT).tokenOfOwnerByIndex(account, i);
-            if (isAccessible(assetId, collectTokenId, timestamp)) {
+            uint256 collectionId = CollectNFT(collectNFT).tokenOfOwnerByIndex(account, i);
+            if (isAccessible(assetId, collectionId, timestamp)) {
                 return true;
             }
         }
         return false;
     }
 
-    function isAccessible(bytes32 assetId, uint256 collectTokenId, uint256 timestamp) public view returns (bool) {
+    function isAccessible(bytes32 assetId, uint256 collectionId, uint256 timestamp) public view returns (bool) {
         if (timestamp > block.timestamp) {
             return false;
         }
 
-        uint256[2][] memory targetSubscribeData = _assetSubscribeData[assetId][collectTokenId];
+        uint256[2][] memory targetSubscribeData = _assetSubscribeData[assetId][collectionId];
         for (uint256 i = 0; i < targetSubscribeData.length; ++i) {
             if (timestamp >= targetSubscribeData[i][0] && timestamp <= targetSubscribeData[i][1]) {
                 return true;
@@ -93,7 +93,11 @@ contract SubscribeAction is ActionBase {
         return false;
     }
 
-    function registerCollectModule(address subscribeModule) external {
+    function getSubscribeData(bytes32 assetId, uint256 collectionId) external view returns (uint256[2][] memory) {
+        return _assetSubscribeData[assetId][collectionId];
+    }
+
+    function registerSubscribeModule(address subscribeModule) external {
         if (isSubscribeModuleRegistered[subscribeModule]) {
             revert SubscribeModuleAlreadyRegistered();
         }

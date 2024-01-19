@@ -19,7 +19,7 @@
   "devDependencies": {
     "@openzeppelin/contracts": "4.9.0",
     "@quant-finance/solidity-datetime": "^2.2.0",
-    "dataverse-contracts-test": "^1.0.6",
+    "dataverse-contracts-test": "^1.0.7",
     "solhint": "^3.6.2"
   }
 }

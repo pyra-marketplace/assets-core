@@ -4,3 +4,12 @@ out = "out"
 libs = ['lib', 'node_modules']
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
+[rpc_endpoints]
+polygon = "${POLYGON_RPC_URL}"
+polygon_mumbai = "${POLYGON_MUMBAI_RPC_URL}"
+bsc = "${BSC_RPC_URL}"
+bsc_testnet = "${BSC_TESTNET_RPC_URL}"
+scroll = "${SCROLL_RPC_URL}"
+scroll_sepolia = "${SCROLL_SEPOLIA_RPC_URL}"
+filecoin = "${FILECOIN_RPC_URL}"
+filecoin_calibration = "${FILECOIN_CALIBRATION_RPC_URL}"

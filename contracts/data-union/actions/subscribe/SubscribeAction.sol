@@ -44,7 +44,7 @@ contract SubscribeAction is ActionBase {
         monetizerRestricted
         returns (bytes memory)
     {
-        if (COLLECT_ACTION.isCollected(assetId, subscriber)) {
+        if (!COLLECT_ACTION.isCollected(assetId, subscriber)) {
             revert NotCollected();
         }
 

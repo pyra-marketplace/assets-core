@@ -37,7 +37,6 @@ contract ShareAction is ActionBase {
 
     function initializeAction(bytes32 assetId, bytes calldata data) external monetizerRestricted {
         (
-            address publisher,
             string memory name,
             string memory symbol,
             address currency,
@@ -45,14 +44,14 @@ contract ShareAction is ActionBase {
             uint256 initialSupply,
             uint256 accessibleShareAmount,
             address curve
-        ) = abi.decode(data, (address, string, string, address, uint256, uint256, uint256, address));
+        ) = abi.decode(data, (string, string, address, uint256, uint256, uint256, address));
         ShareToken shareToken = new ShareToken(name, symbol);
         _assetShareData[assetId].currency = currency;
         _assetShareData[assetId].feePoint = feePoint;
         _assetShareData[assetId].totalSupply = initialSupply;
         _assetShareData[assetId].accessibleShareAmount = accessibleShareAmount;
 
-        shareToken.mint(publisher, initialSupply);
+        shareToken.mint(_assetOwner(assetId), initialSupply);
         _assetShareData[assetId].shareToken = address(shareToken);
 
         if (!IERC165(curve).supportsInterface(type(ICurve).interfaceId)) {

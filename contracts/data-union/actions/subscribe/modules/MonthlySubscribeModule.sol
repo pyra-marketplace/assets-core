@@ -65,10 +65,10 @@ contract MonthlySubscribeModule is SubscribeModuleBase {
         uint256 remainingAmount;
         {
             uint256 dataverseFeeAmount =
-                _payDataverseFee(subscriber, _subscribeDetail.currency, _subscribeDetail.amount);
-            uint256 dappFeeAmount = _payDappFee(assetId, subscriber, _subscribeDetail.currency, _subscribeDetail.amount);
+                _payDataverseFee(subscriber, _subscribeDetail.currency, _subscribeDetail.amount * count);
+            uint256 dappFeeAmount = _payDappFee(assetId, subscriber, _subscribeDetail.currency, _subscribeDetail.amount * count);
 
-            remainingAmount = _subscribeDetail.amount - dataverseFeeAmount - dappFeeAmount;
+            remainingAmount = _subscribeDetail.amount * count - dataverseFeeAmount - dappFeeAmount;
         }
 
         if (remainingAmount > 0) {

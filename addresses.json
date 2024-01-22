@@ -1,0 +1,18 @@
+{
+    "PolygonMumbai": {
+        "DataToken": {
+            "DataToken": "0x51062c1BB6694F5C929766D0611E324D161C5dFd",
+            "CollectAction": "0xe1DC0114ac0a97d75970901F7457796077B93919",
+            "FeeCollectModule": "0x8A5a638128d39d1Cf65cEb461Fdc8B7f72c3CBF9",
+            "ShareAction": "0xf10e7143Aa427367d973F55c9d5D0a16F957106e",
+            "DefaultCurve": "0x4Fb2e7f103CcC760FcDa1f6849e1562fa08Ab012"
+        },
+        "DataUnion": {
+            "DataUnion": "0xa5B1689f622D9230ACc7a1738000BcEe66701d37",
+            "CollectAction": "0x8926e00660303752870ae196Dd636498becC3711",
+            "FeeCollectModule": "0x846309529630794506097932A8ceae20f1E7c373",
+            "SubscribeAction": "0x62440c487e1DC3aB08cB9FBcB24Cc90a5C6e1306",
+            "MonthlySubscribeModule": "0xcb8e99DcE9E26fF6A51Dc51B2ca1b8274d4C6b58"
+        }
+    }
+}

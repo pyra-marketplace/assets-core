@@ -118,7 +118,6 @@ contract DataTokenTest is BaseTest {
 
         actions[0] = address(shareAction);
         actionInitDatas[0] = abi.encode(
-            publisher,
             shareTokenName,
             shareTokenSymbol,
             address(erc20Mock),
@@ -154,7 +153,6 @@ contract DataTokenTest is BaseTest {
 
         actions[0] = address(shareAction);
         actionInitDatas[0] = abi.encode(
-            publisher,
             shareTokenName,
             shareTokenSymbol,
             address(erc20Mock),

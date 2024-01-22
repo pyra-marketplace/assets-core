@@ -28,7 +28,7 @@ contract BaseTest is Test {
 
     address dappDeployer;
     address dappTreasury;
-    bytes32 testDappId;
+    bytes16 testDappId;
     string testResourceId;
     uint256 testResourceFeePoint;
     string[] testResources;
@@ -41,7 +41,7 @@ contract BaseTest is Test {
 
         dappDeployer = makeAddr("dappDeployer");
         dappTreasury = makeAddr("dappTreasury");
-        testDappId = keccak256("testDappId");
+        testDappId = bytes16("testDappId");
         testResourceId = "testResourceId";
         testResourceFeePoint = 100;
 

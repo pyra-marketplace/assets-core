@@ -9,8 +9,8 @@ import {DefaultCurve} from "../../contracts/data-token/actions/share/curve/Defau
 import "forge-std/Script.sol";
 
 contract DeployDataToken is Script {
-    address dappTableRegistry = 0x228538B514b674978553F0dE9f272Bc01EeE2788;
-    address actionConfig = 0xC721c6c0D9DAA7130d1b20d0B0f876278770EB03;
+    address dappTableRegistry = 0x2fA7e6bE1B348384d42dd8890F1EF936326487bF;
+    address actionConfig = 0x4dE5f5D64e5Dc5c10a34dfb88b71642B9E9F0D07;
 
     function run() public {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");

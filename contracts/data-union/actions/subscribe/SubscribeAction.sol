@@ -1,13 +1,14 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.21;
 
 import {IERC165} from "@openzeppelin/contracts/interfaces/IERC165.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import {IERC721Enumerable} from "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
-import {ActionBase} from "dataverse-contracts-test/contracts/monetizer/base/ActionBase.sol";
+import {ActionBase} from "../../../base/ActionBase.sol";
 import {ISubscribeModule} from "./modules/ISubscribeModule.sol";
+import {IDataUnion} from "../../IDataUnion.sol";
 import {CollectAction} from "../collect/CollectAction.sol";
 import {CollectNFT} from "../collect/token/CollectNFT.sol";
 
@@ -30,7 +31,7 @@ contract SubscribeAction is ActionBase {
         COLLECT_ACTION = CollectAction(collectAction);
     }
 
-    function initializeAction(bytes32 assetId, bytes calldata data) external override monetizerRestricted {
+    function initializeAction(bytes32 assetId, bytes calldata data) external payable override monetizerRestricted {
         (address subscribeModule, bytes memory subscribeInitData) = abi.decode(data, (address, bytes));
         if (!isSubscribeModuleRegistered[subscribeModule]) {
             revert SubscribeModuleNotRegistered();
@@ -40,6 +41,7 @@ contract SubscribeAction is ActionBase {
 
     function processAction(bytes32 assetId, address subscriber, bytes calldata data)
         external
+        payable
         override
         monetizerRestricted
         returns (bytes memory)
@@ -105,5 +107,10 @@ contract SubscribeAction is ActionBase {
             revert NotSubscribeModule();
         }
         isSubscribeModuleRegistered[subscribeModule] = true;
+    }
+
+    function getDappTreasuryData(bytes32 assetId) public view returns (address, uint256) {
+        IDataUnion.UnionAsset memory unionAsset = IDataUnion(monetizer).getUnionAsset(assetId);
+        return ACTION_CONFIG.getDappTreasuryData(unionAsset.resourceId, unionAsset.publishAt);
     }
 }

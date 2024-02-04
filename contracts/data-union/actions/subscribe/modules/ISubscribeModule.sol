@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.21;
 
 interface ISubscribeModule {
     function initializeSubscribeModule(bytes32 assetId, bytes calldata data) external;

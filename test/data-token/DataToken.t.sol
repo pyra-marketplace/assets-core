@@ -1,21 +1,17 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.21;
 
 import {DataToken} from "../../contracts/data-token/DataToken.sol";
 import {IDataToken} from "../../contracts/data-token/IDataToken.sol";
-import {IDataMonetizer} from "dataverse-contracts-test/contracts/monetizer/interfaces/IDataMonetizer.sol";
+import {IDataMonetizer} from "../../contracts/interfaces/IDataMonetizer.sol";
 import {CollectAction} from "../../contracts/data-token/actions/collect/CollectAction.sol";
 import {FeeCollectModule} from "../../contracts/data-token/actions/collect/modules/FeeCollectModule.sol";
-import {ShareAction} from "../../contracts/data-token/actions/share/ShareAction.sol";
-import {DefaultCurve} from "../../contracts/data-token/actions/share/curve/DefaultCurve.sol";
 import {BaseTest} from "../Base.t.sol";
 
 contract DataTokenTest is BaseTest {
     DataToken dataToken;
     CollectAction collectAction;
     FeeCollectModule feeCollectModule;
-    ShareAction shareAction;
-    DefaultCurve defaultCurve;
 
     address publisher;
     address actor;
@@ -26,16 +22,6 @@ contract DataTokenTest is BaseTest {
     uint256 totalSupply = 100;
     uint256 amount = 1e6;
 
-    // ShareAction: initialize
-    string shareTokenName = "testShareTokenName";
-    string shareTokenSymbol = "TEST";
-    uint256 assetOwnerFeePoint = 50;
-    uint256 initialSupply = 500;
-    uint256 accessibleShareAmount = 20;
-    // ShareAction: process
-    uint256 buyShareAmount = 100;
-    uint256 sellShareAmount = 90;
-
     function setUp() public {
         _baseSetup();
         publisher = makeAddr("publisher");
@@ -43,30 +29,22 @@ contract DataTokenTest is BaseTest {
 
         erc20Mock.mint(actor, 1e30);
 
-        dataToken = new DataToken(address(dappTableRegistry));
+        dataToken = new DataToken();
         collectAction = new CollectAction(address(actionConfig), address(dataToken));
         feeCollectModule = new FeeCollectModule(address(collectAction));
-        shareAction = new ShareAction(address(actionConfig), address(dataToken));
-        defaultCurve = new DefaultCurve();
 
         collectAction.registerCollectModule(address(feeCollectModule));
     }
 
     function test_Publish_WhenCollectAction() public {
-        bytes memory data = abi.encode(testFileId);
+        bytes memory data = abi.encode(testResourceId, testFileId);
         address[] memory actions = new address[](1);
         bytes[] memory actionInitDatas = new bytes[](1);
-        bytes32[] memory images = new bytes32[](0);
 
         actions[0] = address(collectAction);
         actionInitDatas[0] = abi.encode(address(feeCollectModule), abi.encode(totalSupply, address(erc20Mock), amount));
-        IDataMonetizer.PublishParams memory publishParams = IDataMonetizer.PublishParams({
-            resourceId: testResourceId,
-            data: data,
-            actions: actions,
-            actionInitDatas: actionInitDatas,
-            images: images
-        });
+        IDataMonetizer.PublishParams memory publishParams =
+            IDataMonetizer.PublishParams({data: data, actions: actions, actionInitDatas: actionInitDatas});
 
         vm.prank(publisher);
         bytes32 assetId = dataToken.publish(publishParams);
@@ -76,25 +54,17 @@ contract DataTokenTest is BaseTest {
         assertEq(tokenAsset.fileId, testFileId);
         assertEq(tokenAsset.publishAt, block.timestamp);
         assertEq(tokenAsset.actions, actions);
-        assertEq(tokenAsset.images.length, 0);
     }
 
     function test_Act_WhenCollectAction() public {
-        bytes memory data = abi.encode(testFileId);
+        bytes memory data = abi.encode(testResourceId, testFileId);
         address[] memory actions = new address[](1);
         bytes[] memory actionInitDatas = new bytes[](1);
-        bytes32[] memory images = new bytes32[](0);
 
         actions[0] = address(collectAction);
         actionInitDatas[0] = abi.encode(address(feeCollectModule), abi.encode(totalSupply, address(erc20Mock), amount));
-        IDataMonetizer.PublishParams memory publishParams = IDataMonetizer.PublishParams({
-            resourceId: testResourceId,
-            data: data,
-            actions: actions,
-            actionInitDatas: actionInitDatas,
-            images: images
-        });
-
+        IDataMonetizer.PublishParams memory publishParams =
+            IDataMonetizer.PublishParams({data: data, actions: actions, actionInitDatas: actionInitDatas});
         vm.prank(publisher);
         bytes32 assetId = dataToken.publish(publishParams);
 
@@ -108,95 +78,5 @@ contract DataTokenTest is BaseTest {
         erc20Mock.approve(address(feeCollectModule), amount);
         dataToken.act(actParams);
         vm.stopPrank();
-    }
-
-    function test_Publish_WhenShareAction() public {
-        bytes memory data = abi.encode(testFileId);
-        address[] memory actions = new address[](1);
-        bytes[] memory actionInitDatas = new bytes[](1);
-        bytes32[] memory images = new bytes32[](0);
-
-        actions[0] = address(shareAction);
-        actionInitDatas[0] = abi.encode(
-            shareTokenName,
-            shareTokenSymbol,
-            address(erc20Mock),
-            assetOwnerFeePoint,
-            initialSupply,
-            accessibleShareAmount,
-            address(defaultCurve)
-        );
-        IDataMonetizer.PublishParams memory publishParams = IDataMonetizer.PublishParams({
-            resourceId: testResourceId,
-            data: data,
-            actions: actions,
-            actionInitDatas: actionInitDatas,
-            images: images
-        });
-
-        vm.prank(publisher);
-        bytes32 assetId = dataToken.publish(publishParams);
-
-        IDataToken.TokenAsset memory tokenAsset = dataToken.getTokenAsset(assetId);
-        assertEq(tokenAsset.resourceId, testResourceId);
-        assertEq(tokenAsset.fileId, testFileId);
-        assertEq(tokenAsset.publishAt, block.timestamp);
-        assertEq(tokenAsset.actions, actions);
-        assertEq(tokenAsset.images.length, 0);
-    }
-
-    function test_Act_WhenShareAction() public {
-        bytes memory data = abi.encode(testFileId);
-        address[] memory actions = new address[](1);
-        bytes[] memory actionInitDatas = new bytes[](1);
-        bytes32[] memory images = new bytes32[](0);
-
-        actions[0] = address(shareAction);
-        actionInitDatas[0] = abi.encode(
-            shareTokenName,
-            shareTokenSymbol,
-            address(erc20Mock),
-            assetOwnerFeePoint,
-            initialSupply,
-            accessibleShareAmount,
-            address(defaultCurve)
-        );
-        IDataMonetizer.PublishParams memory publishParams = IDataMonetizer.PublishParams({
-            resourceId: testResourceId,
-            data: data,
-            actions: actions,
-            actionInitDatas: actionInitDatas,
-            images: images
-        });
-
-        vm.prank(publisher);
-        bytes32 assetId = dataToken.publish(publishParams);
-
-        assertFalse(shareAction.isAccessible(assetId, actor));
-
-        bytes[] memory actionProcessDatas = new bytes[](1);
-        actionProcessDatas[0] = abi.encode(ShareAction.TradeType.Buy, buyShareAmount);
-
-        IDataMonetizer.ActParams memory actParams =
-            IDataMonetizer.ActParams({assetId: assetId, actions: actions, actionProcessDatas: actionProcessDatas});
-
-        vm.startPrank(actor);
-        erc20Mock.approve(address(shareAction), shareAction.getBuyPrice(assetId, buyShareAmount));
-        dataToken.act(actParams);
-        vm.stopPrank();
-
-        assertTrue(shareAction.isAccessible(assetId, actor));
-
-        actionProcessDatas[0] = abi.encode(ShareAction.TradeType.Sell, sellShareAmount);
-
-        actParams =
-            IDataMonetizer.ActParams({assetId: assetId, actions: actions, actionProcessDatas: actionProcessDatas});
-
-        vm.startPrank(actor);
-        erc20Mock.approve(address(shareAction), shareAction.getSellPrice(assetId, sellShareAmount));
-        dataToken.act(actParams);
-        vm.stopPrank();
-
-        assertFalse(shareAction.isAccessible(assetId, actor));
     }
 }

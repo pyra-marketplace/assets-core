@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.21;
 
-import {DataMonetizerBase} from "dataverse-contracts-test/contracts/monetizer/base/DataMonetizerBase.sol";
-import {IAction} from "dataverse-contracts-test/contracts/monetizer/interfaces/IAction.sol";
+import {DataMonetizerBase} from "../base/DataMonetizerBase.sol";
+import {IAction} from "../interfaces/IAction.sol";
 import {IDataUnion} from "./IDataUnion.sol";
 
 contract DataUnion is DataMonetizerBase, IDataUnion {
@@ -11,21 +11,20 @@ contract DataUnion is DataMonetizerBase, IDataUnion {
 
     mapping(bytes32 => uint256) _unionCloseAt;
 
-    constructor(address dappTableRegistry) DataMonetizerBase("DataUnion", "1", dappTableRegistry) {}
+    constructor() DataMonetizerBase("DataUnion", "1") {}
 
     /**
      * @inheritdoc IDataUnion
      */
     function getUnionAsset(bytes32 assetId) external view returns (UnionAsset memory) {
-        (string memory folderId) = abi.decode(_assetById[assetId].data, (string));
+        (string memory resourceId, string memory folderId) = abi.decode(_assetById[assetId].data, (string, string));
         return UnionAsset({
-            resourceId: _assetById[assetId].resourceId,
+            resourceId: resourceId,
             folderId: folderId,
             publishAt: _assetById[assetId].publishAt,
             closeAt: _unionCloseAt[assetId],
             publicationId: _assetById[assetId].publicationId,
-            actions: _assetById[assetId].actions,
-            images: _assetById[assetId].images
+            actions: _assetById[assetId].actions
         });
     }
 
@@ -59,7 +58,7 @@ contract DataUnion is DataMonetizerBase, IDataUnion {
     /**
      * @inheritdoc DataMonetizerBase
      */
-    function _afterPublish(PublishParams calldata, bytes32 assetId) internal virtual override {
+    function _afterPublish(PublishParams calldata, address, uint256, bytes32 assetId) internal virtual override {
         _unionCloseAt[assetId] = type(uint256).max;
     }
 

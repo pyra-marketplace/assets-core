@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.21;
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
@@ -66,7 +66,8 @@ contract MonthlySubscribeModule is SubscribeModuleBase {
         {
             uint256 dataverseFeeAmount =
                 _payDataverseFee(subscriber, _subscribeDetail.currency, _subscribeDetail.amount * count);
-            uint256 dappFeeAmount = _payDappFee(assetId, subscriber, _subscribeDetail.currency, _subscribeDetail.amount * count);
+            uint256 dappFeeAmount =
+                _payDappFee(assetId, subscriber, _subscribeDetail.currency, _subscribeDetail.amount * count);
 
             remainingAmount = _subscribeDetail.amount * count - dataverseFeeAmount - dappFeeAmount;
         }

@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.21;
 
 import {IERC165} from "@openzeppelin/contracts/utils/introspection/IERC165.sol";
-import {ActionBase} from "dataverse-contracts-test/contracts/monetizer/base/ActionBase.sol";
+import {ActionBase} from "../../../base/ActionBase.sol";
 import {ICollectModule} from "./modules/ICollectModule.sol";
 import {CollectNFT} from "./token/CollectNFT.sol";
+import {IDataUnion} from "../../IDataUnion.sol";
 
 contract CollectAction is ActionBase {
     struct CollectData {
@@ -21,7 +22,7 @@ contract CollectAction is ActionBase {
 
     constructor(address actionConfig, address monetizer) ActionBase(actionConfig, monetizer) {}
 
-    function initializeAction(bytes32 assetId, bytes calldata data) external monetizerRestricted {
+    function initializeAction(bytes32 assetId, bytes calldata data) external payable monetizerRestricted {
         (address collectModule, bytes memory collectModuleInitData) = abi.decode(data, (address, bytes));
         if (!isCollectModuleRegistered[collectModule]) {
             revert CollectModuleNotRegistered();
@@ -34,6 +35,7 @@ contract CollectAction is ActionBase {
 
     function processAction(bytes32 assetId, address collector, bytes calldata data)
         external
+        payable
         monetizerRestricted
         returns (bytes memory)
     {
@@ -72,5 +74,10 @@ contract CollectAction is ActionBase {
             revert NotCollectModule();
         }
         isCollectModuleRegistered[collectModule] = true;
+    }
+
+    function getDappTreasuryData(bytes32 assetId) public view returns (address, uint256) {
+        IDataUnion.UnionAsset memory unionAsset = IDataUnion(monetizer).getUnionAsset(assetId);
+        return ACTION_CONFIG.getDappTreasuryData(unionAsset.resourceId, unionAsset.publishAt);
     }
 }

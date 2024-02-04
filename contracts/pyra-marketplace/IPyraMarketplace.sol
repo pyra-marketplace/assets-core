@@ -3,10 +3,8 @@ pragma solidity ^0.8.21;
 
 import {IDataMonetizer} from "../interfaces/IDataMonetizer.sol";
 
-interface IDataToken is IDataMonetizer {
-    struct TokenAsset {
-        string resourceId;
-        string fileId;
+interface IPyraMarketplace is IDataMonetizer {
+    struct MarketAsset {
         uint256 publishAt;
         uint256 publicationId;
         address[] actions;
@@ -17,5 +15,5 @@ interface IDataToken is IDataMonetizer {
      * @param assetId The asset ID to query.
      * @return TokenAsset A struct containing DataToken info.
      */
-    function getTokenAsset(bytes32 assetId) external view returns (TokenAsset memory);
+    function getMarketAsset(bytes32 assetId) external view returns (MarketAsset memory);
 }

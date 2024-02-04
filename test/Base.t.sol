@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.21;
 
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {DappTableRegistry} from "dataverse-contracts-test/contracts/dapp-table-registry/DappTableRegistry.sol";
-import {ActionConfig} from "dataverse-contracts-test/contracts/monetizer/ActionConfig.sol";
+import {ActionConfig} from "../contracts/ActionConfig.sol";
 import "forge-std/Test.sol";
 
 contract ERC20Mock is ERC20 {
@@ -56,7 +56,7 @@ contract BaseTest is Test {
         dappTableRegistry = new DappTableRegistry();
         dappTableRegistry.initialize(systemGovernor, systemTreasury);
 
-        actionConfig = new ActionConfig(address(dappTableRegistry), dataverseTreasury, dataverseFeePoint);
+        actionConfig = new ActionConfig(address(this), address(dappTableRegistry), dataverseTreasury, dataverseFeePoint);
 
         vm.startPrank(systemGovernor);
         dappTableRegistry.whitelistSystemAdmin(systemAdmin, true);

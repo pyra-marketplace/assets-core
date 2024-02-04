@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.21;
 
-import {IDataMonetizer} from "dataverse-contracts-test/contracts/monetizer/interfaces/IDataMonetizer.sol";
+import {IDataMonetizer} from "../interfaces/IDataMonetizer.sol";
 
 interface IDataUnion is IDataMonetizer {
     struct UnionAsset {
@@ -11,10 +11,8 @@ interface IDataUnion is IDataMonetizer {
         uint256 closeAt;
         uint256 publicationId;
         address[] actions;
-        bytes32[] images;
     }
 
-    error DuplicatePublish();
     error NotUnionOwner();
     error UnionAlreadyClosed();
 

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.21;
 
 import {DataUnion} from "../../contracts/data-union/DataUnion.sol";
 import {CollectAction} from "../../contracts/data-union/actions/collect/CollectAction.sol";
@@ -9,13 +9,12 @@ import {MonthlySubscribeModule} from "../../contracts/data-union/actions/subscri
 import "forge-std/Script.sol";
 
 contract DeployDataUnion is Script {
-    address dappTableRegistry = 0x2fA7e6bE1B348384d42dd8890F1EF936326487bF;
     address actionConfig = 0x4dE5f5D64e5Dc5c10a34dfb88b71642B9E9F0D07;
 
     function run() public {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
-        DataUnion dataUnion = new DataUnion(dappTableRegistry);
+        DataUnion dataUnion = new DataUnion();
         CollectAction collectAction = new CollectAction(actionConfig, address(dataUnion));
         FeeCollectModule feeCollectModule = new FeeCollectModule(address(collectAction));
         collectAction.registerCollectModule(address(feeCollectModule));

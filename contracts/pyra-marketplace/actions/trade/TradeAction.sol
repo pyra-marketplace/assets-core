@@ -10,7 +10,7 @@ import {ActionBase} from "../../../base/ActionBase.sol";
 import {IActionConfig} from "../../../interfaces/IActionConfig.sol";
 import {IDataMonetizer} from "../../../interfaces/IDataMonetizer.sol";
 import {TierKey} from "./token/TierKey.sol";
-import {SharesPool} from "../../shares/SharesPool.sol";
+import {SharesPool} from "../../personal/SharesPool.sol";
 
 contract TradeAction is ActionBase {
     using SafeERC20 for IERC20;
@@ -40,9 +40,6 @@ contract TradeAction is ActionBase {
         SHARES_POOL = SharesPool(personalShares);
     }
 
-    /**
-     * @inheritdoc ActionBase
-     */
     function initializeAction(bytes32 assetId, bytes calldata data) external payable monetizerRestricted {
         (string memory name, string memory symbol, uint256 feePoint) = abi.decode(data, (string, string, uint256));
 
@@ -54,9 +51,6 @@ contract TradeAction is ActionBase {
         _assetTierkeyData[assetId].feePoint = feePoint;
     }
 
-    /**
-     * @inheritdoc ActionBase
-     */
     function processAction(bytes32 assetId, address trader, bytes calldata data)
         external
         payable

@@ -4,7 +4,6 @@ pragma solidity ^0.8.21;
 import {DataMonetizerBase} from "../base/DataMonetizerBase.sol";
 import {IAction} from "../interfaces/IAction.sol";
 import {IPyraMarketplace} from "./IPyraMarketplace.sol";
-import {RevenuePool} from "./shares/RevenuePool.sol";
 
 contract PyraMarketplace is DataMonetizerBase, IPyraMarketplace {
     constructor() DataMonetizerBase("PyraMarketplace", "1") {}

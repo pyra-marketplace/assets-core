@@ -6,7 +6,7 @@ import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SharesPool} from "./SharesPool.sol";
-import {ShareToken} from "./ShareToken.sol";
+import {ShareToken} from "./token/ShareToken.sol";
 
 contract RevenuePool is Ownable, ERC20 {
     error NotOwner();

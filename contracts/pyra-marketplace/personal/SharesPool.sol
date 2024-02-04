@@ -2,7 +2,7 @@
 pragma solidity ^0.8.21;
 
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-import {ShareToken} from "./ShareToken.sol";
+import {ShareToken} from "./token/ShareToken.sol";
 import {RevenuePool} from "./RevenuePool.sol";
 
 contract SharesPool is Ownable {

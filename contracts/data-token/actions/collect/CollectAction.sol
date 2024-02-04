@@ -22,6 +22,9 @@ contract CollectAction is ActionBase {
 
     constructor(address actionConfig, address monetizer) ActionBase(actionConfig, monetizer) {}
 
+    /**
+     * @inheritdoc ActionBase
+     */
     function initializeAction(bytes32 assetId, bytes calldata data) external payable monetizerRestricted {
         (address collectModule, bytes memory collectModuleInitData) = abi.decode(data, (address, bytes));
         if (!isCollectModuleRegistered[collectModule]) {
@@ -33,6 +36,9 @@ contract CollectAction is ActionBase {
         ICollectModule(collectModule).initializeCollectModule(assetId, collectModuleInitData);
     }
 
+    /**
+     * @inheritdoc ActionBase
+     */
     function processAction(bytes32 assetId, address collector, bytes calldata data)
         external
         payable

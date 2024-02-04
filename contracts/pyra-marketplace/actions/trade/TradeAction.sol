@@ -40,6 +40,9 @@ contract TradeAction is ActionBase {
         SHARES_POOL = SharesPool(personalShares);
     }
 
+    /**
+     * @inheritdoc ActionBase
+     */
     function initializeAction(bytes32 assetId, bytes calldata data) external payable monetizerRestricted {
         (string memory name, string memory symbol, uint256 feePoint) = abi.decode(data, (string, string, uint256));
 
@@ -51,6 +54,9 @@ contract TradeAction is ActionBase {
         _assetTierkeyData[assetId].feePoint = feePoint;
     }
 
+    /**
+     * @inheritdoc ActionBase
+     */
     function processAction(bytes32 assetId, address trader, bytes calldata data)
         external
         payable

@@ -31,6 +31,9 @@ contract SubscribeAction is ActionBase {
         COLLECT_ACTION = CollectAction(collectAction);
     }
 
+    /**
+     * @inheritdoc ActionBase
+     */
     function initializeAction(bytes32 assetId, bytes calldata data) external payable override monetizerRestricted {
         (address subscribeModule, bytes memory subscribeInitData) = abi.decode(data, (address, bytes));
         if (!isSubscribeModuleRegistered[subscribeModule]) {
@@ -39,6 +42,9 @@ contract SubscribeAction is ActionBase {
         ISubscribeModule(subscribeModule).initializeSubscribeModule(assetId, subscribeInitData);
     }
 
+    /**
+     * @inheritdoc ActionBase
+     */
     function processAction(bytes32 assetId, address subscriber, bytes calldata data)
         external
         payable

@@ -1,14 +1,12 @@
 {
   "name": "assets-core-test",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
     "build": "forge build --sizes",
     "test": "forge test",
     "format": "forge fmt",
-    "deploy:polygon_mumbai": "source .env && forge script script/Deploy.s.sol --rpc-url polygon_mumbai --broadcast --legacy",
-    "deploy:bsc_testnet": "source .env && forge script script/Deploy.s.sol --rpc-url bsc_testnet --broadcast --legacy",
     "solhint": "solhint contracts/**/*.sol",
     "slither:detail": "slither .",
     "slither:summary": "slither . --print human-summary"

@@ -1,18 +1,17 @@
 {
     "PolygonMumbai": {
+        "ActionConfig": "0x4dE5f5D64e5Dc5c10a34dfb88b71642B9E9F0D07",
         "DataToken": {
-            "DataToken": "0x51062c1BB6694F5C929766D0611E324D161C5dFd",
-            "CollectAction": "0xe1DC0114ac0a97d75970901F7457796077B93919",
-            "FeeCollectModule": "0x8A5a638128d39d1Cf65cEb461Fdc8B7f72c3CBF9",
-            "ShareAction": "0xf10e7143Aa427367d973F55c9d5D0a16F957106e",
-            "DefaultCurve": "0x4Fb2e7f103CcC760FcDa1f6849e1562fa08Ab012"
+            "DataToken": "0x4aFAdB423b9A72Ec6E17a3459912f85E7F11d0B5",
+            "CollectAction": "0xbc5892E6c404a6E6521e260cbDd687b6618103BE",
+            "FeeCollectModule": "0x378083966800F8fCf19F057EC3f2D13a966bA5db"
         },
         "DataUnion": {
-            "DataUnion": "0xa5B1689f622D9230ACc7a1738000BcEe66701d37",
-            "CollectAction": "0x8926e00660303752870ae196Dd636498becC3711",
-            "FeeCollectModule": "0x846309529630794506097932A8ceae20f1E7c373",
-            "SubscribeAction": "0x62440c487e1DC3aB08cB9FBcB24Cc90a5C6e1306",
-            "MonthlySubscribeModule": "0xcb8e99DcE9E26fF6A51Dc51B2ca1b8274d4C6b58"
+            "DataUnion": "0x798eb74d96d92d438F8596829B7e44aA49278221",
+            "CollectAction": "0xA320e4256094AFB013AD37dcE3215e3dBb55a8bB",
+            "FeeCollectModule": "0x5Bd800d14C93dA7a7d9A35d2453a3FEBaE1f3E41",
+            "SubscribeAction": "0x68a9A3aa61a8ABD312EB7bAf0bB86eAD0877AB14",
+            "MonthlySubscribeModule": "0x45DB33Bd066c7AbC1f861F5BDd54422D7df06A45"
         }
     }
 }

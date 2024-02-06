@@ -90,7 +90,7 @@ interface IDataMonetizer {
      * @param assetId The asset ID to query asset owner for.
      * @return address The owner of asset ID.
      */
-    function getAssetOwner(bytes32 assetId) external returns (address);
+    function getAssetOwner(bytes32 assetId) external view returns (address);
 
     /**
      * @notice Publish an asset.

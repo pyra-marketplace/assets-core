@@ -1,5 +1,5 @@
 {
-  "name": "data-assets-contracts",
+  "name": "assets-core-test",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -16,10 +16,11 @@
   "keywords": [],
   "author": "",
   "license": "MIT",
-  "devDependencies": {
+  "dependencies": {
     "@openzeppelin/contracts": "^5.0.1",
-    "@quant-finance/solidity-datetime": "^2.2.0",
-    "dataverse-contracts-test": "^1.0.8",
+    "dataverse-contracts-test": "^1.0.11"
+  },
+  "devDependencies": {
     "solhint": "^3.6.2"
   }
 }

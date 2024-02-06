@@ -28,7 +28,7 @@ contract BaseTest is Test {
 
     address dappDeployer;
     address dappTreasury;
-    bytes16 testDappId;
+    bytes32 testDappId;
     string testResourceId;
     uint256 testResourceFeePoint;
     string[] testResources;
@@ -41,7 +41,7 @@ contract BaseTest is Test {
 
         dappDeployer = makeAddr("dappDeployer");
         dappTreasury = makeAddr("dappTreasury");
-        testDappId = bytes16("testDappId");
+        testDappId = bytes32("testDappId");
         testResourceId = "testResourceId";
         testResourceFeePoint = 100;
 
@@ -60,12 +60,11 @@ contract BaseTest is Test {
 
         vm.startPrank(systemGovernor);
         dappTableRegistry.whitelistSystemAdmin(systemAdmin, true);
-        dappTableRegistry.whitelistRegisterCurrency(address(erc20Mock), true);
         vm.stopPrank();
 
         vm.prank(systemAdmin);
         dappTableRegistry.registerDapp(
-            testDappId, dappDeployer, address(erc20Mock), dappTreasury, testResources, testFeePoints
+            testDappId, dappDeployer, dappTreasury, testResources, testFeePoints
         );
     }
 }

@@ -3,8 +3,7 @@ pragma solidity ^0.8.21;
 
 interface IDataMonetizer {
     struct Asset {
-        // string contentURI; // published data
-        bytes data;
+        bytes data;         // published data
         uint256 publishAt; // timestamp
         uint256 publicationId; // publicationNFT tokenId
         address[] actions; // action addresses
@@ -40,7 +39,6 @@ interface IDataMonetizer {
         bytes32 indexed assetId,
         address indexed publisher,
         uint256 indexed publicationId,
-        // string contentURI,
         bytes data,
         address[] actions,
         bytes[] actionInitDatas

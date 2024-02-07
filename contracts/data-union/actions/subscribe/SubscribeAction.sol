@@ -69,6 +69,9 @@ contract SubscribeAction is ActionBase {
         if (!COLLECT_ACTION.isCollected(assetId, account)) {
             return false;
         }
+        if(account == IDataUnion(monetizer).getAssetOwner(assetId)) {
+            return true;
+        }
         address collectNFT = COLLECT_ACTION.getAssetCollectData(assetId).collectNFT;
         uint256 balance = CollectNFT(collectNFT).balanceOf(account);
         for (uint256 i = 0; i < balance; ++i) {

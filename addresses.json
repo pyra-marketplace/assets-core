@@ -1,17 +1,17 @@
 {
-    "PolygonMumbai": {
-        "ActionConfig": "0xcfBA10a0F2588e11E1Da7852888c6142D3Ad6B24",
-        "DataToken": {
-            "DataToken": "0x4d14D8B67B6208328B9f797d5c0baA6e945D4558",
-            "CollectAction": "0xf6000C9437F499767b8B54d193A75Bc009d0c030",
-            "FeeCollectModule": "0xB34701cbF9163731957B2ADAc6F2F2a4574B3149"
-        },
-        "DataUnion": {
-            "DataUnion": "0x2307Db7d9dee510FeC4E8fd3EaBb46E836F99b05",
-            "CollectAction": "0xbB51a5A47c65107C97Cd5d6ba2794DcD48c13164",
-            "FeeCollectModule": "0x25baa51393428E578aEf987c3CbcC7D054aB64dc",
-            "SubscribeAction": "0xD43c88A18E635f9346A89739509d726816663868",
-            "MonthlySubscribeModule": "0xFc304B4bC8e8eaFD697d5485D93d0A3011A15E69"
-         }
+  "PolygonMumbai": {
+    "ActionConfig": "0xcfBA10a0F2588e11E1Da7852888c6142D3Ad6B24",
+    "DataToken": {
+      "DataToken": "0xfbC34821B2EEB948a167B2c9f91877f79256C4Ce",
+      "CollectAction": "0x5Cb33Fe0b684Affa9B1dc37a7D66Ac118f576C18",
+      "FeeCollectModule": "0x5c7576A81Dc484f67EFc9429d44eB9792E8aDd52"
+    },
+    "DataUnion": {
+      "DataUnion": "0x6fcb6823a013C2D563C834E10455aA81169a7226",
+      "CollectAction": "0x6BBF2eD1efF82bf0910B0DEa1096c79aD348B3eA",
+      "FeeCollectModule": "0xb0cd483c4de8Ddff6D1e7d6E44C0B7F091CE3575",
+      "SubscribeAction": "0xe47c5F5e81b6D8d6efFb1279c67933085Afb5dEB",
+      "MonthlySubscribeModule": "0x661E1Fe30cb1146046667B439FA77495254Fde5d"
     }
+  }
 }

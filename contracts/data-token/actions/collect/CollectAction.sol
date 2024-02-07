@@ -2,6 +2,7 @@
 pragma solidity ^0.8.21;
 
 import {IERC165} from "@openzeppelin/contracts/utils/introspection/IERC165.sol";
+import {IDataMonetizer} from "../../../interfaces/IDataMonetizer.sol";
 import {ActionBase} from "../../../base/ActionBase.sol";
 import {ICollectModule} from "./modules/ICollectModule.sol";
 import {CollectNFT} from "./token/CollectNFT.sol";
@@ -51,6 +52,9 @@ contract CollectAction is ActionBase {
     }
 
     function isCollected(bytes32 assetId, address account) external view returns (bool) {
+        if(account == IDataMonetizer(monetizer).getAssetOwner(assetId)) {
+            return true;
+        }
         if (_assetCollectData[assetId].collectNFT == address(0)) {
             return false;
         } else {

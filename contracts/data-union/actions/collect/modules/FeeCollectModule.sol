@@ -57,12 +57,12 @@ contract FeeCollectModule is CollectModuleBase {
 
         ++targetCollectDetail.currentCollects;
 
-        uint256 dataverseFeeAmount =
-            _payDataverseFee(collector, targetCollectDetail.currency, targetCollectDetail.amount);
-        uint256 dappFeeAmount =
+        uint256 protocolFee =
+            _payProtocolFee(collector, targetCollectDetail.currency, targetCollectDetail.amount);
+        uint256 dappFee =
             _payDappFee(assetId, collector, targetCollectDetail.currency, targetCollectDetail.amount);
 
-        uint256 remainingAmount = targetCollectDetail.amount - dataverseFeeAmount - dappFeeAmount;
+        uint256 remainingAmount = targetCollectDetail.amount - protocolFee - dappFee;
 
         if (remainingAmount > 0) {
             IERC20(targetCollectDetail.currency).safeTransferFrom(collector, _assetOwner(assetId), remainingAmount);

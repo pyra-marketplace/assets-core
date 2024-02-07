@@ -23,8 +23,8 @@ contract BaseTest is Test {
     ActionConfig actionConfig;
     ERC20Mock erc20Mock;
 
-    address dataverseTreasury;
-    uint256 dataverseFeePoint;
+    address protocolTreasury;
+    uint256 protocolFeePoint;
 
     address dappDeployer;
     address dappTreasury;
@@ -45,8 +45,8 @@ contract BaseTest is Test {
         testResourceId = "testResourceId";
         testResourceFeePoint = 100;
 
-        dataverseTreasury = makeAddr("dataverseTreasury");
-        dataverseFeePoint = 50;
+        protocolTreasury = makeAddr("protocolTreasury");
+        protocolFeePoint = 50;
 
         testResources.push(testResourceId);
         testFeePoints.push(testResourceFeePoint);
@@ -56,7 +56,7 @@ contract BaseTest is Test {
         dappTableRegistry = new DappTableRegistry();
         dappTableRegistry.initialize(systemGovernor, systemTreasury);
 
-        actionConfig = new ActionConfig(address(this), address(dappTableRegistry), dataverseTreasury, dataverseFeePoint);
+        actionConfig = new ActionConfig(address(this), address(dappTableRegistry), protocolTreasury, protocolFeePoint);
 
         vm.startPrank(systemGovernor);
         dappTableRegistry.whitelistSystemAdmin(systemAdmin, true);

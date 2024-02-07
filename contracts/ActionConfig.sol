@@ -9,17 +9,17 @@ contract ActionConfig is Ownable, IActionConfig {
     uint256 public constant BASE_FEE_POINT = 10000;
     IDappTableRegistry public immutable DAPP_TABLE_REGISTRY;
 
-    address internal _treasury;
-    uint256 internal _feePoint;
+    address internal _protocolTreasury;
+    uint256 internal _protocolFeePoint;
 
-    constructor(address initialOwner, address dappTableRegistry, address treasury, uint256 feePoint)
+    constructor(address initialOwner, address dappTableRegistry, address protocolTreasury, uint256 protocolFeePoint)
         Ownable(initialOwner)
     {
         DAPP_TABLE_REGISTRY = IDappTableRegistry(dappTableRegistry);
-        _treasury = treasury;
-        _feePoint = feePoint;
-        emit TreasurySet(msg.sender, treasury);
-        emit TreasuryFeeSet(msg.sender, feePoint);
+        _protocolTreasury = protocolTreasury;
+        _protocolFeePoint = protocolFeePoint;
+        emit TreasurySet(msg.sender, protocolTreasury);
+        emit TreasuryFeeSet(msg.sender, protocolFeePoint);
     }
 
     /**
@@ -36,26 +36,26 @@ contract ActionConfig is Ownable, IActionConfig {
     /**
      * @inheritdoc IActionConfig
      */
-    function getDataverseTreasuryData() external view returns (address, uint256) {
-        return (_treasury, _feePoint);
+    function getProtocolTreasuryData() external view returns (address, uint256) {
+        return (_protocolTreasury, _protocolFeePoint);
     }
 
     /**
      * @inheritdoc IActionConfig
      */
-    function setDataverseTreasury(address treasury) external onlyOwner {
-        _treasury = treasury;
-        emit TreasurySet(msg.sender, treasury);
+    function setProtocolTreasury(address protocolTreasury) external onlyOwner {
+        _protocolTreasury = protocolTreasury;
+        emit TreasurySet(msg.sender, protocolTreasury);
     }
 
     /**
      * @inheritdoc IActionConfig
      */
-    function setDataverseFeePoint(uint256 feePoint) external onlyOwner {
-        if (feePoint > BASE_FEE_POINT) {
+    function setProtocolFeePoint(uint256 protocolFeePoint) external onlyOwner {
+        if (protocolFeePoint > BASE_FEE_POINT) {
             revert InvalidFeePoint();
         }
-        _feePoint = feePoint;
-        emit TreasuryFeeSet(msg.sender, feePoint);
+        _protocolFeePoint = protocolFeePoint;
+        emit TreasuryFeeSet(msg.sender, protocolFeePoint);
     }
 }

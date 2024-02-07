@@ -35,25 +35,25 @@ abstract contract SubscribeModuleBase is ERC165 {
         return interfaceId == type(ISubscribeModule).interfaceId || super.supportsInterface(interfaceId);
     }
 
-    function _assetOwner(bytes32 assetId) internal returns (address) {
+    function _assetOwner(bytes32 assetId) internal view returns (address) {
         return IDataMonetizer(SUBSCRIBE_ACTION.monetizer()).getAssetOwner(assetId);
     }
 
-    function _payDataverseFee(address payer, address currency, uint256 amount) internal returns (uint256) {
-        (address treasury, uint256 feePoint) = SUBSCRIBE_ACTION.getDataverseTreasuryData();
-        uint256 dataverseFeeAmount = (amount * feePoint) / BASE_FEE_POINT;
-        if (dataverseFeeAmount > 0) {
-            IERC20(currency).safeTransferFrom(payer, treasury, dataverseFeeAmount);
+    function _payProtocolFee(address payer, address currency, uint256 amount) internal returns (uint256) {
+        (address treasury, uint256 feePoint) = SUBSCRIBE_ACTION.getProtocolTreasuryData();
+        uint256 protocolFee = (amount * feePoint) / BASE_FEE_POINT;
+        if (protocolFee > 0) {
+            IERC20(currency).safeTransferFrom(payer, treasury, protocolFee);
         }
-        return dataverseFeeAmount;
+        return protocolFee;
     }
 
     function _payDappFee(bytes32 assetId, address payer, address currency, uint256 amount) internal returns (uint256) {
         (address treasury, uint256 feePoint) = SUBSCRIBE_ACTION.getDappTreasuryData(assetId);
-        uint256 dappFeeAmount = (amount * feePoint) / BASE_FEE_POINT;
-        if (dappFeeAmount > 0) {
-            IERC20(currency).safeTransferFrom(payer, treasury, dappFeeAmount);
+        uint256 dappFee = (amount * feePoint) / BASE_FEE_POINT;
+        if (dappFee > 0) {
+            IERC20(currency).safeTransferFrom(payer, treasury, dappFee);
         }
-        return dappFeeAmount;
+        return dappFee;
     }
 }

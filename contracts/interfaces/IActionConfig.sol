@@ -22,21 +22,21 @@ interface IActionConfig {
         returns (address, uint256);
 
     /**
-     * @notice Returns dataverse treasury address and fee point.
+     * @notice Returns protocol treasury address and fee point.
      * @return address Treasury address.
      * @return uint256 Fee point value.
      */
-    function getDataverseTreasuryData() external view returns (address, uint256);
+    function getProtocolTreasuryData() external view returns (address, uint256);
 
     /**
-     * @notice Sets the treasury address for the dataverse foundation.
+     * @notice Sets the treasury address for the protocol.
      * @param treasury The address of the treasury.
      */
-    function setDataverseTreasury(address treasury) external;
+    function setProtocolTreasury(address treasury) external;
 
     /**
-     * @notice Sets the fee point value for the dataverse foundation.
+     * @notice Sets the fee point value for the protocol.
      * @param feePoint The fee point value to be set.
      */
-    function setDataverseFeePoint(uint256 feePoint) external;
+    function setProtocolFeePoint(uint256 feePoint) external;
 }

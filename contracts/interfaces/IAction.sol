@@ -9,15 +9,7 @@ interface IAction {
      * @return address Treasury address.
      * @return uint256 Fee point value.
      */
-    function getDataverseTreasuryData() external view returns (address, uint256);
-
-    // /**
-    //  * @notice Returns dapp developer's treasury address and fee point.
-    //  * @param assetId The asset ID to query.
-    //  * @return address Treasury address.
-    //  * @return uint256 Fee point value.
-    //  */
-    // function getDappTreasuryData(bytes32 assetId) external view returns (address, uint256);
+    function getProtocolTreasuryData() external view returns (address, uint256);
 
     /**
      * @notice Initialize action for a given asset.

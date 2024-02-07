@@ -5,13 +5,6 @@
       "DataToken": "0xfbC34821B2EEB948a167B2c9f91877f79256C4Ce",
       "CollectAction": "0x5Cb33Fe0b684Affa9B1dc37a7D66Ac118f576C18",
       "FeeCollectModule": "0x5c7576A81Dc484f67EFc9429d44eB9792E8aDd52"
-    },
-    "DataUnion": {
-      "DataUnion": "0x6fcb6823a013C2D563C834E10455aA81169a7226",
-      "CollectAction": "0x6BBF2eD1efF82bf0910B0DEa1096c79aD348B3eA",
-      "FeeCollectModule": "0xb0cd483c4de8Ddff6D1e7d6E44C0B7F091CE3575",
-      "SubscribeAction": "0xe47c5F5e81b6D8d6efFb1279c67933085Afb5dEB",
-      "MonthlySubscribeModule": "0x661E1Fe30cb1146046667B439FA77495254Fde5d"
     }
   }
 }

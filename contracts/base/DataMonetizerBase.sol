@@ -13,7 +13,7 @@ import {IAction} from "../interfaces/IAction.sol";
 abstract contract DataMonetizerBase is ERC721Enumerable, EIP712, ReentrancyGuard, IDataMonetizer {
     bytes32 constant PUBLISH_WITH_SIG_TYPEHASH = keccak256(
         bytes(
-            "PublishWithSig(string resourceId,bytes data,address[] actions,bytes[] actionInitDatas,bytes32[] images,uint256 nonce,uint256 deadline)"
+            "PublishWithSig(bytes data,address[] actions,bytes[] actionInitDatas,uint256 nonce,uint256 deadline)"
         )
     );
 

@@ -34,7 +34,7 @@ abstract contract ActionBase is ERC165, IAction {
     /**
      * @inheritdoc IAction
      */
-    function getDataverseTreasuryData() public view returns (address, uint256) {
-        return ACTION_CONFIG.getDataverseTreasuryData();
+    function getProtocolTreasuryData() public view returns (address, uint256) {
+        return ACTION_CONFIG.getProtocolTreasuryData();
     }
 }

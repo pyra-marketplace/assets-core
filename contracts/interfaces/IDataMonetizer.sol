@@ -39,6 +39,7 @@ interface IDataMonetizer {
         bytes32 indexed assetId,
         address indexed publisher,
         uint256 indexed publicationId,
+        uint256 publishAt,
         bytes data,
         address[] actions,
         bytes[] actionInitDatas
@@ -47,6 +48,7 @@ interface IDataMonetizer {
     event AssetActed(
         bytes32 indexed assetId,
         address indexed actor,
+        uint256 actAt,
         address[] actions,
         bytes[] actionProcessDatas,
         bytes[] actionReturnDatas

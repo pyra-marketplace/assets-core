@@ -208,7 +208,7 @@ abstract contract DataMonetizerBase is ERC721Enumerable, EIP712, ReentrancyGuard
         _afterPublish(publishParams, publisher, publicationId, assetId);
 
         emit AssetPublished(
-            assetId, publisher, publicationId, publishParams.data, publishParams.actions, publishParams.actionInitDatas
+            assetId, publisher, publicationId, block.timestamp, publishParams.data, publishParams.actions, publishParams.actionInitDatas
         );
 
         return assetId;
@@ -255,7 +255,7 @@ abstract contract DataMonetizerBase is ERC721Enumerable, EIP712, ReentrancyGuard
             actionReturnDatas[i] = abi.decode(returnData, (bytes));
         }
 
-        emit AssetActed(actParams.assetId, actor, actParams.actions, actParams.actionProcessDatas, actionReturnDatas);
+        emit AssetActed(actParams.assetId, actor, block.timestamp, actParams.actions, actParams.actionProcessDatas, actionReturnDatas);
     }
 
     function _addActions(AddActionsParams memory addActionsParams, address signer) internal {

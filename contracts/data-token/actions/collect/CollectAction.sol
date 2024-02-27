@@ -18,6 +18,8 @@ contract CollectAction is ActionBase {
     error CollectModuleNotRegistered();
     error NotCollectModule();
 
+    event CollectNFTDeployed(bytes32 indexed assetId, address collectNFT);
+
     mapping(address => bool) public isCollectModuleRegistered;
     mapping(bytes32 => CollectData) internal _assetCollectData;
 
@@ -42,6 +44,7 @@ contract CollectAction is ActionBase {
     {
         if (_assetCollectData[assetId].collectNFT == address(0)) {
             _assetCollectData[assetId].collectNFT = address(new CollectNFT());
+            emit CollectNFTDeployed(assetId, _assetCollectData[assetId].collectNFT);
         }
         uint256 collectionId = CollectNFT(_assetCollectData[assetId].collectNFT).mintCollection(collector);
 

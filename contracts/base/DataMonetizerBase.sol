@@ -205,11 +205,11 @@ abstract contract DataMonetizerBase is ERC721Enumerable, EIP712, ReentrancyGuard
             }
         }
 
-        _afterPublish(publishParams, publisher, publicationId, assetId);
-
         emit AssetPublished(
             assetId, publisher, publicationId, block.timestamp, publishParams.data, publishParams.actions, publishParams.actionInitDatas
         );
+
+        _afterPublish(publishParams, publisher, publicationId, assetId);
 
         return assetId;
     }

@@ -81,16 +81,8 @@ contract FeeCollectModule is CollectModuleBase {
             targetCollectDetail.currency,
             targetCollectDetail.amount
         );
-        uint256 dappFee = _payDappFee(
-            assetId,
-            collector,
-            targetCollectDetail.currency,
-            targetCollectDetail.amount
-        );
 
-        uint256 remainingAmount = targetCollectDetail.amount -
-            protocolFee -
-            dappFee;
+        uint256 remainingAmount = targetCollectDetail.amount - protocolFee;
 
         if (remainingAmount > 0) {
             IERC20(targetCollectDetail.currency).safeTransferFrom(

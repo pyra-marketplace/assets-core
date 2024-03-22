@@ -82,9 +82,4 @@ contract CollectAction is ActionBase {
         }
         isCollectModuleRegistered[collectModule] = true;
     }
-
-    function getDappTreasuryData(bytes32 assetId) public view returns (address, uint256) {
-        IDataToken.TokenAsset memory tokenAsset = IDataToken(monetizer).getTokenAsset(assetId);
-        return ACTION_CONFIG.getDappTreasuryData(tokenAsset.resourceId, tokenAsset.publishAt);
-    }
 }

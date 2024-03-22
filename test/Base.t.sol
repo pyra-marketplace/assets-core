@@ -2,7 +2,6 @@
 pragma solidity ^0.8.21;
 
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import {DappTableRegistry} from "dataverse-contracts-test/contracts/dapp-table-registry/DappTableRegistry.sol";
 import {ActionConfig} from "../contracts/ActionConfig.sol";
 import {IDataMonetizer} from "contracts/interfaces/IDataMonetizer.sol";
 import {EIP712Encoder} from "contracts/libraries/EIP712Encoder.sol";
@@ -33,57 +32,20 @@ contract BaseTest is Test {
         )
     );
 
-    address systemGovernor;
-    address systemAdmin;
-    address systemTreasury;
-
-    DappTableRegistry dappTableRegistry;
     ActionConfig actionConfig;
     ERC20Mock erc20Mock;
 
     address protocolTreasury;
     uint256 protocolFeePoint;
 
-    address dappDeployer;
-    address dappTreasury;
-    bytes32 testDappId;
-    string testResourceId;
-    uint256 testResourceFeePoint;
-    string[] testResources;
-    uint256[] testFeePoints;
+    string testResourceId = "testResourceId";
 
     function _baseSetup() internal {
-        systemGovernor = makeAddr("systemGovernor");
-        systemAdmin = makeAddr("systemAdmin");
-        systemTreasury = makeAddr("systemTreasury");
-
-        dappDeployer = makeAddr("dappDeployer");
-        dappTreasury = makeAddr("dappTreasury");
-        testDappId = bytes32("testDappId");
-        testResourceId = "testResourceId";
-        testResourceFeePoint = 100;
-
         protocolTreasury = makeAddr("protocolTreasury");
         protocolFeePoint = 50;
 
-        testResources.push(testResourceId);
-        testFeePoints.push(testResourceFeePoint);
-
         erc20Mock = new ERC20Mock();
-
-        dappTableRegistry = new DappTableRegistry();
-        dappTableRegistry.initialize(systemGovernor, systemTreasury);
-
-        actionConfig = new ActionConfig(address(this), address(dappTableRegistry), protocolTreasury, protocolFeePoint);
-
-        vm.startPrank(systemGovernor);
-        dappTableRegistry.whitelistSystemAdmin(systemAdmin, true);
-        vm.stopPrank();
-
-        vm.prank(systemAdmin);
-        dappTableRegistry.registerDapp(
-            testDappId, dappDeployer, dappTreasury, testResources, testFeePoints
-        );
+        actionConfig = new ActionConfig(address(this), protocolTreasury, protocolFeePoint);
     }
 
     function _buildPublishSignature(address monetizer, IDataMonetizer.PublishParams memory publishParams, address signer, uint256 signerPK) internal view returns (IDataMonetizer.EIP712Signature memory) {

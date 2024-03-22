@@ -47,13 +47,4 @@ abstract contract CollectModuleBase is ICollectModule, ERC165 {
         }
         return protocolFee;
     }
-
-    function _payDappFee(bytes32 assetId, address payer, address currency, uint256 amount) internal returns (uint256) {
-        (address treasury, uint256 feePoint) = COLLECT_ACTION.getDappTreasuryData(assetId);
-        uint256 dappFee = (amount * feePoint) / BASE_FEE_POINT;
-        if (dappFee > 0) {
-            IERC20(currency).safeTransferFrom(payer, treasury, dappFee);
-        }
-        return dappFee;
-    }
 }

@@ -2,9 +2,9 @@
   "PolygonMumbai": {
     "ActionConfig": "0xcfBA10a0F2588e11E1Da7852888c6142D3Ad6B24",
     "DataToken": {
-      "DataToken": "0xF1e21f851D6aB7A550e2b72F0b2CD595b334d735",
-      "CollectAction": "0x0959AE66a6f26c9A3d28D145f30a8AbC2Fa874B3",
-      "FeeCollectModule": "0x8065e8fa8940681a8e340A531b543eAaF03C84e9"
+      "DataToken": "0x7bDC6b53EB04DA4787F9a501551b533A314E8fE9",
+      "CollectAction": "0xB587c77c7BbFebFbC57eB78869EAf8E274091f9C",
+      "FeeCollectModule": "0x2589B259E8521b9CD22eD16c1e760E222C147392"
     }
   }
 }

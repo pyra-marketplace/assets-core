@@ -36,7 +36,7 @@ contract FeeCollectModule is CollectModuleBase {
             data,
             (uint256, address, uint256)
         );
-        if (totalSupply == 0 || amount == 0) {
+        if (totalSupply == 0) {
             revert InitParamsInvalid();
         }
 
@@ -48,8 +48,6 @@ contract FeeCollectModule is CollectModuleBase {
         });
 
         _assetCollectDetailById[assetId] = _publicationData;
-
-        // emit CollectModuleInitialized(assetId, totalSupply, currency, amount);
     }
 
     /**
@@ -75,21 +73,23 @@ contract FeeCollectModule is CollectModuleBase {
         );
 
         ++targetCollectDetail.currentCollects;
-
-        uint256 protocolFee = _payProtocolFee(
-            collector,
-            targetCollectDetail.currency,
-            targetCollectDetail.amount
-        );
-
-        uint256 remainingAmount = targetCollectDetail.amount - protocolFee;
-
-        if (remainingAmount > 0) {
-            IERC20(targetCollectDetail.currency).safeTransferFrom(
+        
+        if(targetCollectDetail.currency != address(0) && targetCollectDetail.amount != 0) {
+            uint256 protocolFee = _payProtocolFee(
                 collector,
-                _assetOwner(assetId),
-                remainingAmount
+                targetCollectDetail.currency,
+                targetCollectDetail.amount
             );
+
+            uint256 remainingAmount = targetCollectDetail.amount - protocolFee;
+
+            if (remainingAmount > 0) {
+                IERC20(targetCollectDetail.currency).safeTransferFrom(
+                    collector,
+                    _assetOwner(assetId),
+                    remainingAmount
+                );
+            }
         }
 
         return new bytes(0);

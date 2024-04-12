@@ -7,7 +7,7 @@ import {FeeCollectModule} from "../../contracts/data-token/actions/collect/modul
 import "forge-std/Script.sol";
 
 contract DeployDataToken is Script {
-    address actionConfig = 0xE041389d5DD559bC746A6A402Aa07Fc69268bcF0;
+    address actionConfig = 0x4be5136fE3E5c908183ec56A55C5A8fE6896faf2;
 
     function run() public {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");

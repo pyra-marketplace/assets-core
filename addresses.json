@@ -1,10 +1,10 @@
 {
-  "PolygonMumbai": {
-    "ActionConfig": "0xE041389d5DD559bC746A6A402Aa07Fc69268bcF0",
+  "BaseSepolia": {
+    "ActionConfig": "0x4be5136fE3E5c908183ec56A55C5A8fE6896faf2",
     "DataToken": {
-      "DataToken": "0x8EaE24862BF8c1656486D5Cf49F0AE780a93d695",
-      "CollectAction": "0xC27e4Ac7EBc02866196055BcFFBE8d0d05B185CB",
-      "FeeCollectModule": "0x59bE42237222d11F0761a78162daE9f1a8450Cdb"
+      "DataToken": "0xD3ba62d203D8B8Be795e6f1F77bb71948B0a8205",
+      "CollectAction": "0x8325A514ef2A8Af1B2B02F418E108207B6a45DA5",
+      "FeeCollectModule": "0xcF9E24E4F808bC017493D5fCF9BA685182D87352"
     }
   }
 }
